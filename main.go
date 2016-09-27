@@ -39,7 +39,7 @@ func main() {
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
-			Usage:  "line message",
+			Usage:  "facebook message",
 			EnvVar: "PLUGIN_MESSAGE",
 		},
 		cli.StringFlag{

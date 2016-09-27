@@ -42,17 +42,10 @@ Execute from the working directory:
 
 ```
 docker run --rm \
-  -e PLUGIN_CHANNEL_ID=xxxxxxx \
-  -e PLUGIN_CHANNEL_SECRET=xxxxxxx \
-  -e PLUGIN_MID=xxxxxxx \
+  -e PLUGIN_FB_PAGE_TOKEN=xxxxxxx \
+  -e PLUGIN_FB_VERIFY_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
-  -e PLUGIN_IMAGE=https://example.com/1.png \
-  -e PLUGIN_VIDEO=http://example.com/1.mp4 \
-  -e PLUGIN_Audio=http://example.com/1.mp3::1000 \
-  -e PLUGIN_Sticker=1::1::100 \
-  -e PLUGIN_Location=title::address::latitude::longitude \
-  -e PLUGIN_DELIMITER=:: \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

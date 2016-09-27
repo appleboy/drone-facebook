@@ -1,4 +1,4 @@
-.PHONY: test
+.PHONY:
 
 VERSION := $(shell git describe --tags || git rev-parse --short HEAD)
 DEPLOY_ACCOUNT := "appleboy"

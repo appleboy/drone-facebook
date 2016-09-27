@@ -6,6 +6,8 @@ import (
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/paked/messenger"
 )
 
 type (
@@ -28,17 +30,11 @@ type (
 
 	// Config for the plugin.
 	Config struct {
-		ChannelID     string
-		ChannelSecret string
-		MID           string
-		To            []string
-		Delimiter     string
-		Message       []string
-		Image         []string
-		Video         []string
-		Audio         []string
-		Sticker       []string
-		Location      []string
+		PageToken   string
+		VerifyToken string
+		Verify      bool
+		To          []string
+		Message     []string
 	}
 
 	// Plugin values.
@@ -47,44 +43,45 @@ type (
 		Build  Build
 		Config Config
 	}
-
-	// Audio format
-	Audio struct {
-		URL      string
-		Duration int
-	}
-
-	// Location format
-	Location struct {
-		Title     string
-		Address   string
-		Latitude  float64
-		Longitude float64
-	}
 )
+
+func trimElement(keys []string) []string {
+	var newKeys []string
+
+	for _, value := range keys {
+		value = strings.Trim(value, " ")
+		if len(value) == 0 {
+			continue
+		}
+		newKeys = append(newKeys, value)
+	}
+
+	return newKeys
+}
+
+func parseID(keys []string) []int64 {
+	var newKeys []int64
+
+	for _, value := range keys {
+		id, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			log.Println(err.Error())
+
+			continue
+		}
+		newKeys = append(newKeys, id)
+	}
+
+	return newKeys
+}
 
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
 
-	if len(p.Config.ChannelID) == 0 || len(p.Config.ChannelSecret) == 0 || len(p.Config.MID) == 0 {
-		log.Println("missing line bot config")
+	if len(p.Config.PageToken) == 0 || len(p.Config.VerifyToken) == 0 || len(p.Config.To) == 0 {
+		log.Println("missing facebook config")
 
-		return errors.New("missing line bot config")
-	}
-
-	ChannelID, err := strconv.ParseInt(p.Config.ChannelID, 10, 64)
-	if err != nil {
-		log.Println("wrong channel id")
-
-		return err
-	}
-
-	bot, _ := linebot.NewClient(ChannelID, p.Config.ChannelSecret, p.Config.MID)
-
-	if len(p.Config.To) == 0 {
-		log.Println("missing line user config")
-
-		return errors.New("missing line user config")
+		return errors.New("missing facebook config")
 	}
 
 	var message []string
@@ -92,6 +89,27 @@ func (p Plugin) Exec() error {
 		message = p.Config.Message
 	} else {
 		message = p.Message(p.Repo, p.Build)
+	}
+
+	// Create a new messenger client
+	client := messenger.New(messenger.Options{
+		Verify:      p.Config.Verify,
+		Token:       p.Config.PageToken,
+		VerifyToken: p.Config.VerifyToken,
+	})
+
+	// parse ids
+	ids := parseID(p.Config.To)
+
+	// send message.
+	for _, value := range ids {
+		To := messenger.Recipient{
+			ID: value,
+		}
+
+		for _, value := range trimElement(message) {
+			client.Send(To, value)
+		}
 	}
 
 	return nil

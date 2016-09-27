@@ -12,25 +12,25 @@ var Version string
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "line plugin"
-	app.Usage = "line plugin"
+	app.Name = "facebook plugin"
+	app.Usage = "facebook plugin"
 	app.Action = run
 	app.Version = Version
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:   "channel.id",
-			Usage:  "line channel id",
-			EnvVar: "PLUGIN_CHANNEL_ID,LINE_CHANNEL_ID",
+			Name:   "page.token",
+			Usage:  "facebook page token",
+			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN",
 		},
 		cli.StringFlag{
-			Name:   "channel.secret",
-			Usage:  "line channel secret",
-			EnvVar: "PLUGIN_CHANNEL_SECRET,LINE_CHANNEL_SECRET",
+			Name:   "verify.token",
+			Usage:  "facebook verify token",
+			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN",
 		},
-		cli.StringFlag{
-			Name:   "mid",
-			Usage:  "line mid",
-			EnvVar: "PLUGIN_MID,LINE_MID",
+		cli.BoolFlag{
+			Name:   "verify",
+			Usage:  "verifying webhooks on the Facebook Developer Portal",
+			EnvVar: "PLUGIN_VERIFY",
 		},
 		cli.StringSliceFlag{
 			Name:   "to",
@@ -41,37 +41,6 @@ func main() {
 			Name:   "message",
 			Usage:  "line message",
 			EnvVar: "PLUGIN_MESSAGE",
-		},
-		cli.StringSliceFlag{
-			Name:   "image",
-			Usage:  "line image",
-			EnvVar: "PLUGIN_IMAGE",
-		},
-		cli.StringSliceFlag{
-			Name:   "video",
-			Usage:  "line video",
-			EnvVar: "PLUGIN_VIDEO",
-		},
-		cli.StringSliceFlag{
-			Name:   "audio",
-			Usage:  "line audio",
-			EnvVar: "PLUGIN_AUDIO",
-		},
-		cli.StringSliceFlag{
-			Name:   "sticker",
-			Usage:  "line sticker",
-			EnvVar: "PLUGIN_STICKER",
-		},
-		cli.StringSliceFlag{
-			Name:   "location",
-			Usage:  "line location",
-			EnvVar: "PLUGIN_LOCATION",
-		},
-		cli.StringFlag{
-			Name:   "delimiter",
-			Usage:  "line delimiter",
-			Value:  "::",
-			EnvVar: "PLUGIN_DELIMITER",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
@@ -141,17 +110,11 @@ func run(c *cli.Context) error {
 			Link:   c.String("build.link"),
 		},
 		Config: Config{
-			ChannelID:     c.String("channel.id"),
-			ChannelSecret: c.String("channel.secret"),
-			MID:           c.String("mid"),
-			To:            c.StringSlice("to"),
-			Delimiter:     c.String("delimiter"),
-			Message:       c.StringSlice("message"),
-			Image:         c.StringSlice("image"),
-			Video:         c.StringSlice("video"),
-			Audio:         c.StringSlice("audio"),
-			Sticker:       c.StringSlice("sticker"),
-			Location:      c.StringSlice("location"),
+			PageToken:   c.String("page.token"),
+			VerifyToken: c.String("verify.token"),
+			Verify:      c.Bool("verify"),
+			To:          c.StringSlice("to"),
+			Message:     c.StringSlice("message"),
 		},
 	}
 

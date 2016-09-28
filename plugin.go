@@ -118,7 +118,7 @@ func (p Plugin) Exec() error {
 
 // Message is plugin default message.
 func (p Plugin) Message(repo Repo, build Build) []string {
-	return []string{fmt.Sprintf("[%s] <%s> (%s) 『%s』by %s",
+	return []string{fmt.Sprintf("[%s] <%s> (%s)『%s』by %s",
 		build.Status,
 		build.Link,
 		build.Branch,

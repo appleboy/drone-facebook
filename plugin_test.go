@@ -47,7 +47,7 @@ func TestDefaultMessageFormat(t *testing.T) {
 
 	message := plugin.Message(plugin.Repo, plugin.Build)
 
-	assert.Equal(t, []string{"[success] <https://github.com/appleboy/go-hello> (master) 『update travis』by Bo-Yi Wu"}, message)
+	assert.Equal(t, []string{"[success] <https://github.com/appleboy/go-hello> (master)『update travis』by Bo-Yi Wu"}, message)
 }
 
 func TestSendMessage(t *testing.T) {

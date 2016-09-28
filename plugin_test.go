@@ -57,12 +57,13 @@ func TestSendMessage(t *testing.T) {
 			Owner: "appleboy",
 		},
 		Build: Build{
-			Number: 101,
-			Status: "success",
-			Link:   "https://github.com/appleboy/go-hello",
-			Author: "Bo-Yi Wu",
-			Branch: "master",
-			Commit: "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
+			Number:  101,
+			Status:  "success",
+			Link:    "https://github.com/appleboy/go-hello",
+			Author:  "Bo-Yi Wu",
+			Branch:  "master",
+			Message: "update travis by drone plugin",
+			Commit:  "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
 		},
 
 		Config: Config{

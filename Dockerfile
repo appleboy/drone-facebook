@@ -1,8 +1,5 @@
-FROM alpine:3.4
+FROM centurylink/ca-certs
 
-RUN apk update && \
-  apk add ca-certificates && \
-  rm -rf /var/cache/apk/*
+ADD drone-facebook /
 
-ADD drone-facebook /bin/
-ENTRYPOINT ["/bin/drone-facebook"]
+ENTRYPOINT ["/drone-facebook"]

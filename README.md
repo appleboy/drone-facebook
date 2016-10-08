@@ -2,7 +2,15 @@
 
 [![Build Status](https://travis-ci.org/appleboy/drone-facebook.svg?branch=master)](https://travis-ci.org/appleboy/drone-facebook) [![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-facebook)](https://goreportcard.com/report/github.com/appleboy/drone-facebook)
 
-[Drone](https://github.com/drone/drone) plugin for sending facebook notifications.
+[Drone](https://github.com/drone/drone) plugin for sending [Facebook Messages](https://developers.facebook.com/docs/messenger-platform).
+
+## Feature
+
+* [x] Send with Text Message.
+* [ ] Send with New Image.
+* [ ] Send with New Audio.
+* [ ] Send with New Video.
+* [ ] Send with New File.
 
 ## Build
 

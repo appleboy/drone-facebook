@@ -8,9 +8,9 @@
 
 * [x] Send with Text Message.
 * [x] Send with New Image.
-* [ ] Send with New Audio.
-* [ ] Send with New Video.
-* [ ] Send with New File.
+* [x] Send with New Audio.
+* [x] Send with New Video.
+* [x] Send with New File.
 
 ## Build
 
@@ -55,6 +55,9 @@ docker run --rm \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
   -e PLUGIN_IMAGE=http://example.com/test.png \
+  -e PLUGIN_AUDIO=http://example.com/test.mp3 \
+  -e PLUGIN_VIDEO=http://example.com/test.mp4 \
+  -e PLUGIN_FILE=http://example.com/test.pdf \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

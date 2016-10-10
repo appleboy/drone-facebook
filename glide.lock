@@ -1,12 +1,12 @@
 hash: db0c6db9ebfcff2b85a298d7284e59d65def2095d65ea6f6718b29dd69a929c3
-updated: 2016-09-27T14:44:56.310174968+08:00
+updated: 2016-10-10T10:03:11.122279838+08:00
 imports:
 - name: github.com/joho/godotenv
   version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
   subpackages:
   - autoload
 - name: github.com/paked/messenger
-  version: 2db24269ecc01c4a0509a6e6fd30c1103e0fa22c
+  version: 39df036128fcd6a705b1950f5826e3e45806ac86
 - name: github.com/stretchr/testify
   version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
   subpackages:

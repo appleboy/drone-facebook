@@ -37,6 +37,7 @@ type (
 		To          []string
 		Message     []string
 		Image       []string
+		Audio       []string
 	}
 
 	// Plugin values.
@@ -109,12 +110,19 @@ func (p Plugin) Exec() error {
 			ID: value,
 		}
 
+		// send text notification
 		for _, value := range trimElement(message) {
 			client.Send(To, value)
 		}
 
+		// send image notification
 		for _, value := range trimElement(p.Config.Image) {
 			client.Attachment(To, messenger.ImageAttachment, value)
+		}
+
+		// send audio notification
+		for _, value := range trimElement(p.Config.Audio) {
+			client.Attachment(To, messenger.AudioAttachment, value)
 		}
 	}
 

@@ -7,7 +7,7 @@
 ## Feature
 
 * [x] Send with Text Message.
-* [ ] Send with New Image.
+* [x] Send with New Image.
 * [ ] Send with New Audio.
 * [ ] Send with New Video.
 * [ ] Send with New File.
@@ -54,6 +54,7 @@ docker run --rm \
   -e PLUGIN_FB_VERIFY_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
+  -e PLUGIN_IMAGE=http://example.com/test.png \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

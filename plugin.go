@@ -39,6 +39,7 @@ type (
 		Image       []string
 		Audio       []string
 		Video       []string
+		File        []string
 	}
 
 	// Plugin values.
@@ -129,6 +130,11 @@ func (p Plugin) Exec() error {
 		// send video notification
 		for _, value := range trimElement(p.Config.Video) {
 			client.Attachment(To, messenger.VideoAttachment, value)
+		}
+
+		// send file notification
+		for _, value := range trimElement(p.Config.File) {
+			client.Attachment(To, messenger.FileAttachment, value)
 		}
 	}
 

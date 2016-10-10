@@ -36,6 +36,7 @@ type (
 		Verify      bool
 		To          []string
 		Message     []string
+		Image       []string
 	}
 
 	// Plugin values.
@@ -110,6 +111,10 @@ func (p Plugin) Exec() error {
 
 		for _, value := range trimElement(message) {
 			client.Send(To, value)
+		}
+
+		for _, value := range trimElement(p.Config.Image) {
+			client.Attachment(To, messenger.ImageAttachment, value)
 		}
 	}
 

@@ -72,6 +72,7 @@ func TestSendMessage(t *testing.T) {
 			Verify:      false,
 			To:          []string{os.Getenv("FB_TO"), "中文ID", "1234567890"},
 			Message:     []string{"Test Facebook Bot From Travis or Local", " "},
+			Image:       []string{"https://cdn3.iconfinder.com/data/icons/picons-social/57/16-apple-256.png", "tests/1234.png"},
 		},
 	}
 

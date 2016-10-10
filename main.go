@@ -52,6 +52,11 @@ func main() {
 			Usage:  "audio message",
 			EnvVar: "PLUGIN_AUDIO",
 		},
+		cli.StringSliceFlag{
+			Name:   "video",
+			Usage:  "video message",
+			EnvVar: "PLUGIN_VIDEO",
+		},
 		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
@@ -133,6 +138,7 @@ func run(c *cli.Context) error {
 			Message:     c.StringSlice("message"),
 			Image:       c.StringSlice("image"),
 			Audio:       c.StringSlice("audio"),
+			Video:       c.StringSlice("video"),
 		},
 	}
 

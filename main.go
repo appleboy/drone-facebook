@@ -39,13 +39,18 @@ func main() {
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
-			Usage:  "facebook message",
+			Usage:  "text message",
 			EnvVar: "PLUGIN_MESSAGE",
 		},
 		cli.StringSliceFlag{
 			Name:   "image",
-			Usage:  "facebook image message",
+			Usage:  "image message",
 			EnvVar: "PLUGIN_IMAGE",
+		},
+		cli.StringSliceFlag{
+			Name:   "audio",
+			Usage:  "audio message",
+			EnvVar: "PLUGIN_AUDIO",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
@@ -127,6 +132,7 @@ func run(c *cli.Context) error {
 			To:          c.StringSlice("to"),
 			Message:     c.StringSlice("message"),
 			Image:       c.StringSlice("image"),
+			Audio:       c.StringSlice("audio"),
 		},
 	}
 

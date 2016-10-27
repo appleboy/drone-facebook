@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/stretchr/testify/assert"
 
+	"fmt"
+	"os"
 	"testing"
 )
 
@@ -47,7 +49,20 @@ func TestUrlEncode(t *testing.T) {
 }
 
 func TestRender(t *testing.T) {
+	// test parse from string
 	res, err := RenderTrim("Trigger from {{ build.author }}", plugin)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "Trigger from Bo-Yi Wu", res)
+
+	// test parse from url
+	res, err = RenderTrim("https://goo.gl/EAivJP", plugin)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "Trigger from Bo-Yi Wu", res)
+
+	// test parse from file
+	res, err = RenderTrim(fmt.Sprintf("file://%s/handlebar/template.handlebar", os.Getenv("PWD")), plugin)
 
 	assert.Nil(t, err)
 	assert.Equal(t, "Trigger from Bo-Yi Wu", res)

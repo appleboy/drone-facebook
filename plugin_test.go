@@ -50,6 +50,21 @@ func TestDefaultMessageFormat(t *testing.T) {
 	assert.Equal(t, []string{"[success] <https://github.com/appleboy/go-hello> (master)『update travis』by Bo-Yi Wu"}, message)
 }
 
+func TestErrorTemplate(t *testing.T) {
+	plugin := Plugin{
+		Config: Config{
+			PageToken:   os.Getenv("FB_PAGE_TOKEN"),
+			VerifyToken: os.Getenv("FB_VERIFY_TOKEN"),
+			Verify:      false,
+			To:          []string{"1234567890"},
+			Message:     []string{"file://xxxxx/xxxxx"},
+		},
+	}
+
+	err := plugin.Exec()
+	assert.NotNil(t, err)
+}
+
 func TestSendMessage(t *testing.T) {
 	plugin := Plugin{
 		Repo: Repo{

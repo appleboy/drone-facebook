@@ -55,6 +55,16 @@ func TestUrlEncode(t *testing.T) {
 	assert.Equal(t, "build+successfully", res)
 }
 
+func TestErrorParseTemplate(t *testing.T) {
+	// test parse from url
+	_, err := RenderTrim("http://golang-is-better-language/XXXX", plugin)
+	assert.NotNil(t, err)
+
+	// test parse from file
+	_, err = RenderTrim("file://xxxxx/xxxxx", plugin)
+	assert.NotNil(t, err)
+}
+
 func TestRender(t *testing.T) {
 	// test parse from string
 	res, err := RenderTrim("Trigger from {{ build.author }}", plugin)

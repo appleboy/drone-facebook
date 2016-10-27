@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 )
 
 var plugin = Plugin{
@@ -38,7 +39,13 @@ func TestToDuration(t *testing.T) {
 }
 
 func TestToDatetime(t *testing.T) {
+	localTime := time.Unix(int64(1477550550), 0).Local().Format("3:04PM")
 	assert.Equal(t, "6:42AM", toDatetime(float64(1477550550), "3:04PM", "UTC"))
+
+	// missing zone
+	assert.Equal(t, localTime, toDatetime(float64(1477550550), "3:04PM", ""))
+	// wrong zone
+	assert.Equal(t, localTime, toDatetime(float64(1477550550), "3:04PM", "ABCDEFG"))
 }
 
 func TestUrlEncode(t *testing.T) {

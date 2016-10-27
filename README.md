@@ -6,7 +6,7 @@
 
 ## Feature
 
-* [x] Send with Text Message.
+* [x] Send with Text Message (Support [handlebar](https://github.com/aymerick/raymond) template).
 * [x] Send with New Image.
 * [x] Send with New Audio.
 * [x] Send with New Video.

@@ -1,6 +1,12 @@
-hash: db0c6db9ebfcff2b85a298d7284e59d65def2095d65ea6f6718b29dd69a929c3
-updated: 2016-10-10T10:03:11.122279838+08:00
+hash: 8b74fcf2cb3a0a1ab4c20487b1d353ab445e0370ec68fc66d092d9107109ec44
+updated: 2016-10-27T12:08:31.471802851+08:00
 imports:
+- name: github.com/aymerick/raymond
+  version: a2232af10b53ef1ae5a767f5178db3a6c1dab655
+  subpackages:
+  - ast
+  - parser
+  - lexer
 - name: github.com/joho/godotenv
   version: 4ed13390c0acd2ff4e371e64d8b97c8954138243
   subpackages:

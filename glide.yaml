@@ -7,3 +7,4 @@ import:
   version: v1.18.1
 - package: github.com/stretchr/testify
 - package: github.com/paked/messenger
+- package: github.com/aymerick/raymond

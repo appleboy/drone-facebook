@@ -71,7 +71,7 @@ func TestSendMessage(t *testing.T) {
 			VerifyToken: os.Getenv("FB_VERIFY_TOKEN"),
 			Verify:      false,
 			To:          []string{os.Getenv("FB_TO"), "中文ID", "1234567890"},
-			Message:     []string{"Test Facebook Bot From Travis or Local", " "},
+			Message:     []string{"Test Facebook Bot From Travis or Local from {{ build.author }}", " "},
 			Image:       []string{"https://cdn3.iconfinder.com/data/icons/picons-social/57/16-apple-256.png", "tests/1234.png"},
 			Audio:       []string{"https://ia802508.us.archive.org/5/items/testmp3testfile/mpthreetest.mp3", "tests/1234.mp3"},
 			Video:       []string{"http://www.sample-videos.com/video/mp4/480/big_buck_bunny_480p_5mb.mp4", "tests/1234.mp4"},

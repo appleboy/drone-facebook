@@ -114,7 +114,12 @@ func (p Plugin) Exec() error {
 
 		// send text notification
 		for _, value := range trimElement(message) {
-			client.Send(To, value)
+			txt, err := RenderTrim(value, p)
+			if err != nil {
+				return err
+			}
+
+			client.Send(To, txt)
 		}
 
 		// send image notification

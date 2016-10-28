@@ -121,21 +121,6 @@ func main() {
 			EnvVar: "DRONE_BUILD_LINK",
 		},
 		cli.Float64Flag{
-			Name:   "build.created",
-			Usage:  "build created",
-			EnvVar: "DRONE_BUILD_CREATED",
-		},
-		cli.Float64Flag{
-			Name:   "build.started",
-			Usage:  "build started",
-			EnvVar: "DRONE_BUILD_STARTED",
-		},
-		cli.Float64Flag{
-			Name:   "build.finished",
-			Usage:  "build finished",
-			EnvVar: "DRONE_BUILD_FINISHED",
-		},
-		cli.Float64Flag{
 			Name:   "job.started",
 			Usage:  "job started",
 			EnvVar: "DRONE_JOB_STARTED",
@@ -165,11 +150,6 @@ func run(c *cli.Context) error {
 			Author:   c.String("commit.author"),
 			Message:  c.String("commit.message"),
 			Link:     c.String("build.link"),
-			Created:  c.Float64("build.created"),
-			Started:  c.Float64("build.started"),
-			Finished: c.Float64("build.finished"),
-		},
-		Job: Job{
 			Started:  c.Float64("job.started"),
 			Finished: c.Float64("job.finished"),
 		},

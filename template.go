@@ -64,6 +64,7 @@ var funcs = map[string]interface{}{
 	"failure":        isFailure,
 	"truncate":       truncate,
 	"urlencode":      urlencode,
+	"buildtime":      buildTime,
 }
 
 func truncate(s string, len int) string {
@@ -83,6 +84,11 @@ func uppercaseFirst(s string) string {
 }
 
 func toDuration(started, finished float64) string {
+	return fmt.Sprint(time.Duration(finished-started) * time.Second)
+}
+
+func buildTime(started float64) string {
+	finished := float64(time.Now().Unix())
 	return fmt.Sprint(time.Duration(finished-started) * time.Second)
 }
 

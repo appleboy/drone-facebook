@@ -28,13 +28,6 @@ type (
 		Author   string
 		Status   string
 		Link     string
-		Created  float64
-		Started  float64
-		Finished float64
-	}
-
-	// Job information.
-	Job struct {
 		Started  float64
 		Finished float64
 	}
@@ -56,7 +49,6 @@ type (
 	Plugin struct {
 		Repo   Repo
 		Build  Build
-		Job    Job
 		Config Config
 	}
 )

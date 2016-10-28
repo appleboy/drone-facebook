@@ -22,7 +22,6 @@ var plugin = Plugin{
 		Branch:   "master",
 		Message:  "update travis",
 		Commit:   "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
-		Created:  float64(1477550540),
 		Started:  float64(1477550550),
 		Finished: float64(1477550750),
 	},
@@ -39,6 +38,11 @@ func TestUppercaseFirst(t *testing.T) {
 
 func TestToDuration(t *testing.T) {
 	assert.Equal(t, "3m20s", toDuration(plugin.Build.Started, plugin.Build.Finished))
+}
+
+func TestBuildTime(t *testing.T) {
+	started := float64(time.Now().Unix() - 10)
+	assert.Equal(t, "10s", buildTime(started))
 }
 
 func TestToDatetime(t *testing.T) {
@@ -70,10 +74,10 @@ func TestErrorParseTemplate(t *testing.T) {
 
 func TestRender(t *testing.T) {
 	// test parse from string
-	res, err := RenderTrim("build time: {{ duration build.started build.finished }}, trigger from {{ build.author }}", plugin)
+	res, err := RenderTrim("trigger from {{ build.author }}", plugin)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "build time: 3m20s, trigger from Bo-Yi Wu", res)
+	assert.Equal(t, "trigger from Bo-Yi Wu", res)
 
 	// test parse from url
 	res, err = RenderTrim("https://goo.gl/EAivJP", plugin)

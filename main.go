@@ -63,6 +63,11 @@ func main() {
 			EnvVar: "PLUGIN_FILE",
 		},
 		cli.StringFlag{
+			Name:   "tag",
+			Usage:  "project tag",
+			EnvVar: "DRONE_TAG",
+		},
+		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
 			EnvVar: "DRONE_REPO_OWNER",
@@ -151,6 +156,7 @@ func run(c *cli.Context) error {
 			Name:  c.String("repo.name"),
 		},
 		Build: Build{
+			Tag:      c.String("tag"),
 			Number:   c.Int("build.number"),
 			Event:    c.String("build.event"),
 			Status:   c.String("build.status"),

@@ -130,6 +130,16 @@ func main() {
 			Usage:  "build finished",
 			EnvVar: "DRONE_BUILD_FINISHED",
 		},
+		cli.Float64Flag{
+			Name:   "job.started",
+			Usage:  "job started",
+			EnvVar: "DRONE_JOB_STARTED",
+		},
+		cli.Float64Flag{
+			Name:   "job.finished",
+			Usage:  "job finished",
+			EnvVar: "DRONE_JOB_FINISHED",
+		},
 	}
 	app.Run(os.Args)
 }
@@ -152,6 +162,10 @@ func run(c *cli.Context) error {
 			Created:  c.Float64("build.created"),
 			Started:  c.Float64("build.started"),
 			Finished: c.Float64("build.finished"),
+		},
+		Job: Job{
+			Started:  c.Float64("job.started"),
+			Finished: c.Float64("job.finished"),
 		},
 		Config: Config{
 			PageToken:   c.String("page.token"),

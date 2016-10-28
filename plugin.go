@@ -32,6 +32,12 @@ type (
 		Finished float64
 	}
 
+	// Job information.
+	Job struct {
+		Started  float64
+		Finished float64
+	}
+
 	// Config for the plugin.
 	Config struct {
 		PageToken   string
@@ -49,6 +55,7 @@ type (
 	Plugin struct {
 		Repo   Repo
 		Build  Build
+		Job    Job
 		Config Config
 	}
 )

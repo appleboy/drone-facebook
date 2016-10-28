@@ -19,14 +19,17 @@ type (
 
 	// Build information.
 	Build struct {
-		Event   string
-		Number  int
-		Commit  string
-		Message string
-		Branch  string
-		Author  string
-		Status  string
-		Link    string
+		Event    string
+		Number   int
+		Commit   string
+		Message  string
+		Branch   string
+		Author   string
+		Status   string
+		Link     string
+		Created  float64
+		Started  float64
+		Finished float64
 	}
 
 	// Config for the plugin.

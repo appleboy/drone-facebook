@@ -83,7 +83,7 @@ func uppercaseFirst(s string) string {
 }
 
 func toDuration(started, finished float64) string {
-	return fmt.Sprintln(time.Duration(finished-started) * time.Second)
+	return fmt.Sprint(time.Duration(finished-started) * time.Second)
 }
 
 func toDatetime(timestamp float64, layout, zone string) string {

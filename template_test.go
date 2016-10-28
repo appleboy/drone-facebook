@@ -15,13 +15,16 @@ var plugin = Plugin{
 		Owner: "appleboy",
 	},
 	Build: Build{
-		Number:  101,
-		Status:  "success",
-		Link:    "https://github.com/appleboy/go-hello",
-		Author:  "Bo-Yi Wu",
-		Branch:  "master",
-		Message: "update travis",
-		Commit:  "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
+		Number:   101,
+		Status:   "success",
+		Link:     "https://github.com/appleboy/go-hello",
+		Author:   "Bo-Yi Wu",
+		Branch:   "master",
+		Message:  "update travis",
+		Commit:   "e7c4f0a63ceeb42a39ac7806f7b51f3f0d204fd2",
+		Created:  float64(1477550540),
+		Started:  float64(1477550550),
+		Finished: float64(1477550750),
 	},
 }
 
@@ -35,17 +38,17 @@ func TestUppercaseFirst(t *testing.T) {
 }
 
 func TestToDuration(t *testing.T) {
-	assert.Equal(t, "3m20s\n", toDuration(float64(1477550550), float64(1477550750)))
+	assert.Equal(t, "3m20s", toDuration(plugin.Build.Started, plugin.Build.Finished))
 }
 
 func TestToDatetime(t *testing.T) {
 	localTime := time.Unix(int64(1477550550), 0).Local().Format("3:04PM")
-	assert.Equal(t, "6:42AM", toDatetime(float64(1477550550), "3:04PM", "UTC"))
+	assert.Equal(t, "6:42AM", toDatetime(plugin.Build.Started, "3:04PM", "UTC"))
 
 	// missing zone
-	assert.Equal(t, localTime, toDatetime(float64(1477550550), "3:04PM", ""))
+	assert.Equal(t, localTime, toDatetime(plugin.Build.Started, "3:04PM", ""))
 	// wrong zone
-	assert.Equal(t, localTime, toDatetime(float64(1477550550), "3:04PM", "ABCDEFG"))
+	assert.Equal(t, localTime, toDatetime(plugin.Build.Started, "3:04PM", "ABCDEFG"))
 }
 
 func TestUrlEncode(t *testing.T) {
@@ -67,10 +70,10 @@ func TestErrorParseTemplate(t *testing.T) {
 
 func TestRender(t *testing.T) {
 	// test parse from string
-	res, err := RenderTrim("Trigger from {{ build.author }}", plugin)
+	res, err := RenderTrim("build time: {{ duration build.started build.finished }}, trigger from {{ build.author }}", plugin)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "Trigger from Bo-Yi Wu", res)
+	assert.Equal(t, "build time: 3m20s, trigger from Bo-Yi Wu", res)
 
 	// test parse from url
 	res, err = RenderTrim("https://goo.gl/EAivJP", plugin)

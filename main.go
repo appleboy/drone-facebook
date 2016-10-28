@@ -115,6 +115,21 @@ func main() {
 			Usage:  "build link",
 			EnvVar: "DRONE_BUILD_LINK",
 		},
+		cli.Float64Flag{
+			Name:   "build.created",
+			Usage:  "build created",
+			EnvVar: "DRONE_BUILD_CREATED",
+		},
+		cli.Float64Flag{
+			Name:   "build.started",
+			Usage:  "build started",
+			EnvVar: "DRONE_BUILD_STARTED",
+		},
+		cli.Float64Flag{
+			Name:   "build.finished",
+			Usage:  "build finished",
+			EnvVar: "DRONE_BUILD_FINISHED",
+		},
 	}
 	app.Run(os.Args)
 }
@@ -126,14 +141,17 @@ func run(c *cli.Context) error {
 			Name:  c.String("repo.name"),
 		},
 		Build: Build{
-			Number:  c.Int("build.number"),
-			Event:   c.String("build.event"),
-			Status:  c.String("build.status"),
-			Commit:  c.String("commit.sha"),
-			Branch:  c.String("commit.branch"),
-			Author:  c.String("commit.author"),
-			Message: c.String("commit.message"),
-			Link:    c.String("build.link"),
+			Number:   c.Int("build.number"),
+			Event:    c.String("build.event"),
+			Status:   c.String("build.status"),
+			Commit:   c.String("commit.sha"),
+			Branch:   c.String("commit.branch"),
+			Author:   c.String("commit.author"),
+			Message:  c.String("commit.message"),
+			Link:     c.String("build.link"),
+			Created:  c.Float64("build.created"),
+			Started:  c.Float64("build.started"),
+			Finished: c.Float64("build.finished"),
 		},
 		Config: Config{
 			PageToken:   c.String("page.token"),

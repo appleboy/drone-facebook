@@ -17,10 +17,10 @@ build:
 	go build -ldflags="$(EXTLDFLAGS)-s -w -X main.Version=$(VERSION)"
 
 test:
-	go test -v -coverprofile=coverage.txt
+	coverage testing
 
 html:
-	go tool cover -html=coverage.txt
+	go tool cover -html=.cover/coverage.txt
 
 update:
 	glide up
@@ -42,4 +42,4 @@ endif
 	docker push $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):$(tag)
 
 clean:
-	rm -rf coverage.txt drone-facebook
+	rm -rf .cover drone-facebook

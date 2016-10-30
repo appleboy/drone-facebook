@@ -24,4 +24,4 @@ _testmain.go
 *.prof
 vendor
 drone-facebook
-coverage.txt
+.cover

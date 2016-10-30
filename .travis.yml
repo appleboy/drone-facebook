@@ -24,6 +24,7 @@ before_install:
   - mkdir -p $GOPATH/bin
   - wget https://raw.githubusercontent.com/appleboy/golang-testing/1.0.1/coverage.sh -O $GOPATH/bin/coverage
   - chmod +x $GOPATH/bin/coverage
+  # install golang tool
   - coverage tool
   - curl https://glide.sh/get | sh
   - if [ -f ${DOCKER_CACHE_FILE} ]; then gunzip -c ${DOCKER_CACHE_FILE} | docker load; fi
@@ -33,7 +34,6 @@ install:
   - make install
 
 script:
-  - coverage testing
   - make test
   - make docker
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
@@ -43,8 +43,8 @@ script:
 
 after_success:
   # ignore main.go coverage
-  - sed -i '/main.go/d' coverage.txt
-  - bash <(curl -s https://codecov.io/bash) -f coverage.txt
+  - sed -i '/main.go/d' .cover/coverage.txt
+  - bash <(curl -s https://codecov.io/bash) -f .cover/coverage.txt
   # deploy from master
   - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_GO_VERSION" == "1.7.3" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";

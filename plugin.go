@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/appleboy/drone-facebook/template"
 	"github.com/paked/messenger"
 )
 
@@ -117,7 +118,7 @@ func (p Plugin) Exec() error {
 
 		// send text notification
 		for _, value := range trimElement(message) {
-			txt, err := RenderTrim(value, p)
+			txt, err := template.RenderTrim(value, p)
 			if err != nil {
 				return err
 			}

@@ -1,4 +1,4 @@
-package main
+package template
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -7,6 +7,49 @@ import (
 	"os"
 	"testing"
 	"time"
+)
+
+type (
+	// Repo information.
+	Repo struct {
+		Owner string
+		Name  string
+	}
+
+	// Build information.
+	Build struct {
+		Tag      string
+		Event    string
+		Number   int
+		Commit   string
+		Message  string
+		Branch   string
+		Author   string
+		Status   string
+		Link     string
+		Started  float64
+		Finished float64
+	}
+
+	// Config for the plugin.
+	Config struct {
+		PageToken   string
+		VerifyToken string
+		Verify      bool
+		To          []string
+		Message     []string
+		Image       []string
+		Audio       []string
+		Video       []string
+		File        []string
+	}
+
+	// Plugin values.
+	Plugin struct {
+		Repo   Repo
+		Build  Build
+		Config Config
+	}
 )
 
 var plugin = Plugin{

@@ -22,7 +22,7 @@ cache:
 
 before_install:
   - mkdir -p $GOPATH/bin
-  - wget https://raw.githubusercontent.com/appleboy/golang-testing/1.0.1/coverage.sh -O $GOPATH/bin/coverage
+  - wget https://raw.githubusercontent.com/appleboy/golang-testing/1.0.2/coverage.sh -O $GOPATH/bin/coverage
   - chmod +x $GOPATH/bin/coverage
   # install golang tool
   - coverage tool

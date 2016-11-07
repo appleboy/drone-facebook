@@ -27,6 +27,7 @@ type (
 		Message  string
 		Branch   string
 		Author   string
+		Email    string
 		Status   string
 		Link     string
 		Started  float64
@@ -68,20 +69,22 @@ func trimElement(keys []string) []string {
 	return newKeys
 }
 
-func parseID(keys []string) []int64 {
-	var newKeys []int64
+func parseTo(value, authorEmail string) (int64, bool) {
+	ids := trimElement(strings.Split(value, ":"))
 
-	for _, value := range keys {
-		id, err := strconv.ParseInt(value, 10, 64)
-		if err != nil {
-			log.Println(err.Error())
-
-			continue
+	if len(ids) > 1 {
+		if email := ids[1]; email != authorEmail {
+			log.Println("email not match")
+			return int64(0), false
 		}
-		newKeys = append(newKeys, id)
 	}
 
-	return newKeys
+	id, err := strconv.ParseInt(ids[0], 10, 64)
+	if err != nil {
+		return int64(0), false
+	}
+
+	return id, true
 }
 
 // Exec executes the plugin.
@@ -107,13 +110,15 @@ func (p Plugin) Exec() error {
 		VerifyToken: p.Config.VerifyToken,
 	})
 
-	// parse ids
-	ids := parseID(p.Config.To)
-
 	// send message.
-	for _, value := range ids {
+	for _, to := range p.Config.To {
+		user, enable := parseTo(to, p.Build.Email)
+		if !enable {
+			continue
+		}
+
 		To := messenger.Recipient{
-			ID: value,
+			ID: user,
 		}
 
 		// send text notification

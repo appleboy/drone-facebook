@@ -58,6 +58,7 @@ docker run --rm \
   -e PLUGIN_AUDIO=http://example.com/test.mp3 \
   -e PLUGIN_VIDEO=http://example.com/test.mp4 \
   -e PLUGIN_FILE=http://example.com/test.pdf \
+  -e PLUGIN_ONLY_MATCH_EMAIL=false \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \
   -e DRONE_COMMIT_SHA=e5e82b5eb3737205c25955dcc3dcacc839b7be52 \

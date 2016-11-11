@@ -62,6 +62,11 @@ func main() {
 			Usage:  "file message",
 			EnvVar: "PLUGIN_FILE",
 		},
+		cli.BoolFlag{
+			Name:   "match.email",
+			Usage:  "send message when only match email",
+			EnvVar: "PLUGIN_ONLY_MATCH_EMAIL",
+		},
 		cli.StringFlag{
 			Name:   "tag",
 			Usage:  "project tag",
@@ -163,6 +168,7 @@ func run(c *cli.Context) error {
 			PageToken:   c.String("page.token"),
 			VerifyToken: c.String("verify.token"),
 			Verify:      c.Bool("verify"),
+			MatchEmail:  c.Bool("match.email"),
 			To:          c.StringSlice("to"),
 			Message:     c.StringSlice("message"),
 			Image:       c.StringSlice("image"),

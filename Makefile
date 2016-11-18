@@ -42,7 +42,7 @@ endif
 	docker push $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE):$(tag)
 
 clean:
-	rm -rf .cover drone-facebook
+	rm -rf .cover $(DEPLOY_IMAGE)
 
 version:
 	@echo $(VERSION)

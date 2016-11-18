@@ -1,6 +1,6 @@
 .PHONY:
 
-VERSION := $(shell git describe --tags || git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags --always || git rev-parse --short HEAD)
 DEPLOY_ACCOUNT := "appleboy"
 DEPLOY_IMAGE := "drone-facebook"
 
@@ -43,3 +43,6 @@ endif
 
 clean:
 	rm -rf .cover drone-facebook
+
+version:
+	@echo $(VERSION)

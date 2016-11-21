@@ -70,6 +70,7 @@ docker run --rm \
   -e DRONE_BUILD_LINK=http://github.com/appleboy/go-hello \
   -e DRONE_JOB_STARTED=1477550550 \
   -e DRONE_JOB_FINISHED=1477550750 \
+  -e DRONE_TAG=1.0.0 \
   -v $(pwd):$(pwd) \
   -w $(pwd) \
   appleboy/drone-facebook

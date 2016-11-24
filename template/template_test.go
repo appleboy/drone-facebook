@@ -58,6 +58,7 @@ var plugin = Plugin{
 		Owner: "appleboy",
 	},
 	Build: Build{
+		Tag:      "1.0.0",
 		Number:   101,
 		Status:   "success",
 		Link:     "https://github.com/appleboy/go-hello",
@@ -117,10 +118,10 @@ func TestErrorParseTemplate(t *testing.T) {
 
 func TestRender(t *testing.T) {
 	// test parse from string
-	res, err := RenderTrim("trigger from {{ build.author }}", plugin)
+	res, err := RenderTrim("deploy tag: {{build.tag}}, trigger from {{ build.author }}", plugin)
 
 	assert.Nil(t, err)
-	assert.Equal(t, "trigger from Bo-Yi Wu", res)
+	assert.Equal(t, "deploy tag: 1.0.0, trigger from Bo-Yi Wu", res)
 
 	// test parse from url
 	res, err = RenderTrim("https://goo.gl/EAivJP", plugin)

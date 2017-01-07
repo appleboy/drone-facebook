@@ -54,10 +54,10 @@ docker run --rm \
   -e PLUGIN_FB_VERIFY_TOKEN=xxxxxxx \
   -e PLUGIN_TO=xxxxxxx \
   -e PLUGIN_MESSAGE=test \
-  -e PLUGIN_IMAGE=http://example.com/test.png \
-  -e PLUGIN_AUDIO=http://example.com/test.mp3 \
-  -e PLUGIN_VIDEO=http://example.com/test.mp4 \
-  -e PLUGIN_FILE=http://example.com/test.pdf \
+  -e PLUGIN_IMAGES=http://example.com/test.png \
+  -e PLUGIN_AUDIOS=http://example.com/test.mp3 \
+  -e PLUGIN_VIDEOS=http://example.com/test.mp4 \
+  -e PLUGIN_FILES=http://example.com/test.pdf \
   -e PLUGIN_ONLY_MATCH_EMAIL=false \
   -e DRONE_REPO_OWNER=appleboy \
   -e DRONE_REPO_NAME=go-hello \

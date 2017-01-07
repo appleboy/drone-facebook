@@ -46,22 +46,22 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "image",
 			Usage:  "image message",
-			EnvVar: "PLUGIN_IMAGE",
+			EnvVar: "PLUGIN_IMAGES",
 		},
 		cli.StringSliceFlag{
 			Name:   "audio",
 			Usage:  "audio message",
-			EnvVar: "PLUGIN_AUDIO",
+			EnvVar: "PLUGIN_AUDIOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "video",
 			Usage:  "video message",
-			EnvVar: "PLUGIN_VIDEO",
+			EnvVar: "PLUGIN_VIDEOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "file",
 			Usage:  "file message",
-			EnvVar: "PLUGIN_FILE",
+			EnvVar: "PLUGIN_FILES",
 		},
 		cli.BoolFlag{
 			Name:   "match.email",

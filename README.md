@@ -76,12 +76,4 @@ docker run --rm \
   appleboy/drone-facebook
 ```
 
-Load all environments from file.
-
-```bash
-docker run --rm \
-  -e ENV_FILE=your_env_file_path \
-  -v $(pwd):$(pwd) \
-  -w $(pwd) \
-  appleboy/drone-facebook
-```
+You can get more [information](DOCS.md) about how to use facebook plugin in drone.

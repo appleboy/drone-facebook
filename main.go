@@ -21,17 +21,17 @@ func main() {
 		cli.StringFlag{
 			Name:   "page.token",
 			Usage:  "facebook page token",
-			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN",
+			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN,PAGE_TOKEN",
 		},
 		cli.StringFlag{
 			Name:   "verify.token",
 			Usage:  "facebook verify token",
-			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN",
+			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN,VERIFY_TOKEN",
 		},
 		cli.BoolFlag{
 			Name:   "verify",
 			Usage:  "verifying webhooks on the Facebook Developer Portal",
-			EnvVar: "PLUGIN_VERIFY",
+			EnvVar: "PLUGIN_VERIFY,VERIFY",
 		},
 		cli.StringSliceFlag{
 			Name:   "to",

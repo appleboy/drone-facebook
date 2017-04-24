@@ -25,6 +25,4 @@ _testmain.go
 drone-facebook
 .cover
 .env
-
-vendor/*
-!vendor/vendor.json
+coverage.txt

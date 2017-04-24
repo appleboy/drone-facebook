@@ -1,8 +1,14 @@
 .PHONY:
 
-VERSION := $(shell git describe --tags --always || git rev-parse --short HEAD)
 DEPLOY_ACCOUNT := "appleboy"
 DEPLOY_IMAGE := "drone-facebook"
+
+TARGETS ?= linux darwin windows
+PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
+GOFILES := $(shell find . -name "*.go" -type f -not -path "./vendor/*")
+SOURCES ?= $(shell find . -name "*.go" -type f)
+TAGS ?=
+LDFLAGS ?= -X 'main.Version=$(VERSION)'
 
 ifneq ($(shell uname), Darwin)
 	EXTLDFLAGS = -extldflags "-static" $(null)
@@ -10,8 +16,14 @@ else
 	EXTLDFLAGS =
 endif
 
-install:
-	glide install
+ifneq ($(DRONE_TAG),)
+	VERSION ?= $(DRONE_TAG)
+else
+	VERSION ?= $(shell git describe --tags --always || git rev-parse --short HEAD)
+endif
+
+install: $(SOURCES)
+	go install -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)'
 
 build:
 	go build -ldflags="$(EXTLDFLAGS)-s -w -X main.Version=$(VERSION)"
@@ -21,9 +33,6 @@ test:
 
 html:
 	go tool cover -html=.cover/coverage.txt
-
-update:
-	glide up
 
 docker_build:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags="-X main.Version=$(VERSION)"

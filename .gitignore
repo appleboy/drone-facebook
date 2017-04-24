@@ -22,7 +22,9 @@ _testmain.go
 *.exe
 *.test
 *.prof
-vendor
 drone-facebook
 .cover
 .env
+
+vendor/*
+!vendor/vendor.json

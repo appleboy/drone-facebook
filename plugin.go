@@ -113,6 +113,7 @@ func parseTo(to []string, authorEmail string, matchEmail bool) []int64 {
 func (p Plugin) Exec() error {
 
 	if len(p.Config.PageToken) == 0 || len(p.Config.VerifyToken) == 0 || len(p.Config.To) == 0 {
+		log.Println(p.Config)
 		log.Println("missing facebook config")
 
 		return errors.New("missing facebook config")

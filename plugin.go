@@ -11,6 +11,8 @@ import (
 
 	"github.com/appleboy/drone-facebook/template"
 	"github.com/paked/messenger"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type (
@@ -58,6 +60,19 @@ type (
 		Config Config
 	}
 )
+
+var (
+	// ReceiveCount is receive notification count
+	ReceiveCount int64
+	// SendCount is send notification count
+	SendCount int64
+)
+
+func init() {
+	// Support metrics
+	m := NewMetrics()
+	prometheus.MustRegister(m)
+}
 
 func trimElement(keys []string) []string {
 	var newKeys []string
@@ -123,11 +138,13 @@ func (p Plugin) Handler(client *messenger.Messenger) http.Handler {
 			fmt.Println("Something went wrong!", err)
 		}
 
+		ReceiveCount++
 		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName))
 	})
 
 	// Setup a handler to be triggered when a message is delivered
 	client.HandleDelivery(func(d messenger.Delivery, r *messenger.Response) {
+		SendCount++
 		fmt.Println("Delivered at:", d.Watermark().Format(time.UnixDate))
 	})
 
@@ -158,6 +175,10 @@ func (p Plugin) Webhook() error {
 
 func (p Plugin) serveMux() *http.ServeMux {
 	mux := http.NewServeMux()
+
+	mux.HandleFunc("/metrics", func(w http.ResponseWriter, req *http.Request) {
+		promhttp.Handler().ServeHTTP(w, req)
+	})
 
 	// Setup HTTP Server for receiving requests from LINE platform
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {

@@ -76,4 +76,4 @@ docker run --rm \
   appleboy/drone-facebook
 ```
 
-You can get more [information](DOCS.md) about how to use facebook plugin in drone.
+You can get more [information](http://plugins.drone.io/appleboy/drone-facebook/) about how to use facebook plugin in drone.

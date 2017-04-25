@@ -146,4 +146,7 @@ func TestDefaultRouter(t *testing.T) {
 	router := p.serveMux()
 	w := performRequest(router, "GET", "/")
 	assert.Equal(t, "Welcome to facebook webhook page.\n", w.Body.String())
+
+	w = performRequest(router, "GET", "/metrics")
+	assert.Equal(t, 200, w.Code)
 }

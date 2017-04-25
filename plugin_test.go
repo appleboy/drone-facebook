@@ -3,25 +3,14 @@ package main
 import (
 	"github.com/stretchr/testify/assert"
 
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 )
 
 func TestMissingDefaultConfig(t *testing.T) {
 	var plugin Plugin
-
-	err := plugin.Exec()
-
-	assert.NotNil(t, err)
-}
-
-func TestMissingUserConfig(t *testing.T) {
-	plugin := Plugin{
-		Config: Config{
-			PageToken:   "123456789",
-			VerifyToken: "123456789",
-		},
-	}
 
 	err := plugin.Exec()
 
@@ -136,4 +125,25 @@ func TestParseTo(t *testing.T) {
 	// test empty ids
 	ids = parseTo([]string{"", " ", "   "}, "a@gmail.com", true)
 	assert.Equal(t, 0, len(ids))
+}
+
+func performRequest(r http.Handler, method, url string) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(method, url, nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
+}
+
+func TestDefaultRouter(t *testing.T) {
+	p := Plugin{
+		Config: Config{
+			PageToken:   os.Getenv("FB_PAGE_TOKEN"),
+			VerifyToken: os.Getenv("FB_VERIFY_TOKEN"),
+			Verify:      false,
+		},
+	}
+
+	router := p.serveMux()
+	w := performRequest(router, "GET", "/")
+	assert.Equal(t, "Welcome to facebook webhook page.\n", w.Body.String())
 }

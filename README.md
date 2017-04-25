@@ -11,6 +11,7 @@
 * [x] Send with New Audio.
 * [x] Send with New Video.
 * [x] Send with New File.
+* [x] Support [prometheus](https://prometheus.io) metrics API.
 
 ## Build
 

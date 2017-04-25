@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/appleboy/drone-facebook/template"
 	"github.com/paked/messenger"
@@ -46,6 +48,7 @@ type (
 		Audio       []string
 		Video       []string
 		File        []string
+		Port        int
 	}
 
 	// Plugin values.
@@ -109,13 +112,84 @@ func parseTo(to []string, authorEmail string, matchEmail bool) []int64 {
 	return ids
 }
 
+// Handler is http handler.
+func (p Plugin) Handler(client *messenger.Messenger) http.Handler {
+	// Setup a handler to be triggered when a message is received
+	client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
+		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
+
+		p, err := client.ProfileByID(m.Sender.ID)
+		if err != nil {
+			fmt.Println("Something went wrong!", err)
+		}
+
+		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName))
+	})
+
+	// Setup a handler to be triggered when a message is delivered
+	client.HandleDelivery(func(d messenger.Delivery, r *messenger.Response) {
+		fmt.Println("Delivered at:", d.Watermark().Format(time.UnixDate))
+	})
+
+	// Setup a handler to be triggered when a message is read
+	client.HandleRead(func(m messenger.Read, r *messenger.Response) {
+		fmt.Println("Read at:", m.Watermark().Format(time.UnixDate))
+	})
+
+	return client.Handler()
+}
+
+// Webhook support line callback service.
+func (p Plugin) Webhook() error {
+	client, err := p.Bot()
+	if err != nil {
+		return err
+	}
+
+	mux := p.Handler(client)
+
+	log.Println("Line Webhook Server Listin on " + strconv.Itoa(p.Config.Port) + " port")
+	if err := http.ListenAndServe(":"+strconv.Itoa(p.Config.Port), mux); err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+func (p Plugin) serveMux() *http.ServeMux {
+	mux := http.NewServeMux()
+
+	// Setup HTTP Server for receiving requests from LINE platform
+	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		fmt.Fprintln(w, "Welcome to facebook webhook page.")
+	})
+
+	return mux
+}
+
+// Bot is new Line Bot clien.
+func (p Plugin) Bot() (*messenger.Messenger, error) {
+	if len(p.Config.PageToken) == 0 || len(p.Config.VerifyToken) == 0 {
+		log.Println("missing facebook config")
+
+		return nil, errors.New("missing facebook config")
+	}
+
+	return messenger.New(messenger.Options{
+		Verify:      p.Config.Verify,
+		Token:       p.Config.PageToken,
+		VerifyToken: p.Config.VerifyToken,
+		WebhookURL:  "callback",
+		Mux:         p.serveMux(),
+	}), nil
+}
+
 // Exec executes the plugin.
 func (p Plugin) Exec() error {
 
-	if len(p.Config.PageToken) == 0 || len(p.Config.VerifyToken) == 0 || len(p.Config.To) == 0 {
-		log.Println("missing facebook config")
-
-		return errors.New("missing facebook config")
+	client, err := p.Bot()
+	if err != nil {
+		return err
 	}
 
 	var message []string
@@ -124,13 +198,6 @@ func (p Plugin) Exec() error {
 	} else {
 		message = p.Message(p.Repo, p.Build)
 	}
-
-	// Create a new messenger client
-	client := messenger.New(messenger.Options{
-		Verify:      p.Config.Verify,
-		Token:       p.Config.PageToken,
-		VerifyToken: p.Config.VerifyToken,
-	})
 
 	ids := parseTo(p.Config.To, p.Build.Email, p.Config.MatchEmail)
 

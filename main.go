@@ -146,6 +146,12 @@ func main() {
 			Usage:  "source env file",
 			EnvVar: "ENV_FILE",
 		},
+		cli.IntFlag{
+			Name:   "port, P",
+			Usage:  "webhook port",
+			EnvVar: "FACEBOOK_WEBHOOK_PORT",
+			Value:  8088,
+		},
 	}
 	app.Run(os.Args)
 }
@@ -185,7 +191,14 @@ func run(c *cli.Context) error {
 			Audio:       c.StringSlice("audio"),
 			Video:       c.StringSlice("video"),
 			File:        c.StringSlice("file"),
+			Port:        c.Int("port"),
 		},
+	}
+
+	command := c.Args().Get(0)
+
+	if command == "webhook" {
+		return plugin.Webhook()
 	}
 
 	return plugin.Exec()

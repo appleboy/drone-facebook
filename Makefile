@@ -1,7 +1,7 @@
 .PHONY:
 
 DIST := dist
-EXECUTABLE := drone-line
+EXECUTABLE := drone-facebook
 GOFMT ?= gofmt "-s"
 
 # for dockerhub

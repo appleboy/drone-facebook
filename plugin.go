@@ -13,6 +13,7 @@ import (
 	"github.com/paked/messenger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"golang.org/x/crypto/acme/autocert"
 )
 
 type (
@@ -51,6 +52,8 @@ type (
 		Video       []string
 		File        []string
 		Port        int
+		AutoTLS     bool
+		Host        []string
 	}
 
 	// Plugin values.
@@ -165,9 +168,16 @@ func (p Plugin) Webhook() error {
 
 	mux := p.Handler(client)
 
-	log.Println("Line Webhook Server Listin on " + strconv.Itoa(p.Config.Port) + " port")
-	if err := http.ListenAndServe(":"+strconv.Itoa(p.Config.Port), mux); err != nil {
-		log.Fatal(err)
+	if p.Config.Port != 443 && !p.Config.AutoTLS {
+		log.Println("Line Webhook Server Listin on " + strconv.Itoa(p.Config.Port) + " port")
+		if err := http.ListenAndServe(":"+strconv.Itoa(p.Config.Port), mux); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if p.Config.AutoTLS && len(p.Config.Host) != 0 {
+		log.Println("Line Webhook Server Listin on 443 port, hostname: " + strings.Join(p.Config.Host, ", "))
+		return http.Serve(autocert.NewListener(p.Config.Host...), mux)
 	}
 
 	return nil

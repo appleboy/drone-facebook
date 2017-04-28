@@ -152,6 +152,16 @@ func main() {
 			EnvVar: "FACEBOOK_WEBHOOK_PORT",
 			Value:  8088,
 		},
+		cli.BoolFlag{
+			Name:   "autotls",
+			Usage:  "Auto tls mode",
+			EnvVar: "PLUGIN_AUTOTLS,AUTOTLS",
+		},
+		cli.StringSliceFlag{
+			Name:   "host",
+			Usage:  "Auto tls host name",
+			EnvVar: "PLUGIN_HOSTNAME,HOSTNAME",
+		},
 	}
 	app.Run(os.Args)
 }
@@ -192,6 +202,8 @@ func run(c *cli.Context) error {
 			Video:       c.StringSlice("video"),
 			File:        c.StringSlice("file"),
 			Port:        c.Int("port"),
+			AutoTLS:     c.Bool("autotls"),
+			Host:        c.StringSlice("host"),
 		},
 	}
 

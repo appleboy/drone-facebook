@@ -12,6 +12,7 @@
 * [x] Send with New Video.
 * [x] Send with New File.
 * [x] Support [prometheus](https://prometheus.io) metrics API.
+* [x] Automatically install TLS certificates from [Let's Encrypt](https://letsencrypt.org/).
 
 ## Build
 

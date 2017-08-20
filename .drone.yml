@@ -33,6 +33,13 @@ pipeline:
     commands:
       - make docker_build
 
+  codecov:
+    image: robertstettner/drone-codecov
+    secrets: [ codecov_token ]
+    when:
+      event: [ push, pull_request ]
+      status: [ success ]
+
   release:
     image: appleboy/golang-testing
     pull: true

@@ -21,6 +21,7 @@ pipeline:
     image: appleboy/golang-testing
     pull: true
     group: golang
+    secrets: [ fb_page_token, fb_verify_token ]
     commands:
       - make test
       - make coverage

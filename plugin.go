@@ -142,7 +142,7 @@ func (p Plugin) Handler(client *messenger.Messenger) http.Handler {
 		}
 
 		ReceiveCount++
-		if err := r.Text(fmt.Sprintf("Hello, %v!", p.FirstName)); err != nil {
+		if err := r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType); err != nil {
 			log.Println("Something went wrong!", err)
 		}
 	})
@@ -247,35 +247,35 @@ func (p Plugin) Exec() error {
 				return err
 			}
 
-			if err := client.Send(To, txt); err != nil {
+			if err := client.Send(To, txt, messenger.ResponseType); err != nil {
 				return err
 			}
 		}
 
 		// send image notification
 		for _, value := range trimElement(p.Config.Image) {
-			if err := client.Attachment(To, messenger.ImageAttachment, value); err != nil {
+			if err := client.Attachment(To, messenger.ImageAttachment, value, messenger.ResponseType); err != nil {
 				return err
 			}
 		}
 
 		// send audio notification
 		for _, value := range trimElement(p.Config.Audio) {
-			if err := client.Attachment(To, messenger.AudioAttachment, value); err != nil {
+			if err := client.Attachment(To, messenger.AudioAttachment, value, messenger.ResponseType); err != nil {
 				return err
 			}
 		}
 
 		// send video notification
 		for _, value := range trimElement(p.Config.Video) {
-			if err := client.Attachment(To, messenger.VideoAttachment, value); err != nil {
+			if err := client.Attachment(To, messenger.VideoAttachment, value, messenger.ResponseType); err != nil {
 				return err
 			}
 		}
 
 		// send file notification
 		for _, value := range trimElement(p.Config.File) {
-			if err := client.Attachment(To, messenger.FileAttachment, value); err != nil {
+			if err := client.Attachment(To, messenger.FileAttachment, value, messenger.ResponseType); err != nil {
 				return err
 			}
 		}

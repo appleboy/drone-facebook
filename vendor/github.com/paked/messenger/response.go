@@ -7,16 +7,22 @@ import (
 	"image"
 	"image/jpeg"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
+	"strings"
 )
 
 // AttachmentType is attachment type.
 type AttachmentType string
+type MessagingType string
+type TopElementStyle string
+type ImageAspectRatio string
 
 const (
 	// SendMessageURL is API endpoint for sending messages.
-	SendMessageURL = "https://graph.facebook.com/v2.6/me/messages"
+	SendMessageURL = "https://graph.facebook.com/v2.11/me/messages"
 
 	// ImageAttachment is image attachment type.
 	ImageAttachment AttachmentType = "image"
@@ -26,6 +32,25 @@ const (
 	VideoAttachment AttachmentType = "video"
 	// FileAttachment is file attachment type.
 	FileAttachment AttachmentType = "file"
+
+	// ResponseType is response messaging type
+	ResponseType MessagingType = "RESPONSE"
+	// UpdateType is update messaging type
+	UpdateType MessagingType = "UPDATE"
+	// MessageTagType is message_tag messaging type
+	MessageTagType MessagingType = "MESSAGE_TAG"
+	// NonPromotionalSubscriptionType is NON_PROMOTIONAL_SUBSCRIPTION messaging type
+	NonPromotionalSubscriptionType MessagingType = "NON_PROMOTIONAL_SUBSCRIPTION"
+
+	// TopElementStyle is compact.
+	CompactTopElementStyle TopElementStyle = "compact"
+	// TopElementStyle is large.
+	LargeTopElementStyle TopElementStyle = "large"
+
+	// ImageAspectRatio is horizontal (1.91:1). Default.
+	HorizontalImageAspectRatio ImageAspectRatio = "horizontal"
+	// ImageAspectRatio is square.
+	SquareImageAspectRatio ImageAspectRatio = "square"
 )
 
 // QueryResponse is the response sent back by Facebook when setting up things
@@ -50,9 +75,10 @@ func checkFacebookError(r io.Reader) error {
 	err = json.NewDecoder(r).Decode(&qr)
 	if qr.Error != nil {
 		err = fmt.Errorf("Facebook error : %s", qr.Error.Message)
+		return err
 	}
 
-	return err
+	return nil
 }
 
 // Response is used for responding to events with messages.
@@ -62,31 +88,47 @@ type Response struct {
 }
 
 // Text sends a textual message.
-func (r *Response) Text(message string) error {
-	return r.TextWithReplies(message, nil)
+func (r *Response) Text(message string, messagingType MessagingType, tags ...string) error {
+	return r.TextWithReplies(message, nil, messagingType, tags...)
 }
 
 // TextWithReplies sends a textual message with some replies
-func (r *Response) TextWithReplies(message string, replies []QuickReply) error {
+// messagingType should be one of the following: "RESPONSE","UPDATE","MESSAGE_TAG","NON_PROMOTIONAL_SUBSCRIPTION"
+// only supply tags when messagingType == "MESSAGE_TAG" (see https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types for more)
+func (r *Response) TextWithReplies(message string, replies []QuickReply, messagingType MessagingType, tags ...string) error {
+	var tag string
+	if len(tags) > 0 {
+		tag = tags[0]
+	}
+
 	m := SendMessage{
-		Recipient: r.to,
+		MessagingType: messagingType,
+		Recipient:     r.to,
 		Message: MessageData{
 			Text:         message,
 			Attachment:   nil,
 			QuickReplies: replies,
 		},
+		Tag: tag,
 	}
 	return r.DispatchMessage(&m)
 }
 
 // AttachmentWithReplies sends a attachment message with some replies
-func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply) error {
+func (r *Response) AttachmentWithReplies(attachment *StructuredMessageAttachment, replies []QuickReply, messagingType MessagingType, tags ...string) error {
+	var tag string
+	if len(tags) > 0 {
+		tag = tags[0]
+	}
+
 	m := SendMessage{
-		Recipient: r.to,
+		MessagingType: messagingType,
+		Recipient:     r.to,
 		Message: MessageData{
 			Attachment:   attachment,
 			QuickReplies: replies,
 		},
+		Tag: tag,
 	}
 	return r.DispatchMessage(&m)
 }
@@ -103,9 +145,15 @@ func (r *Response) Image(im image.Image) error {
 }
 
 // Attachment sends an image, sound, video or a regular file to a chat.
-func (r *Response) Attachment(dataType AttachmentType, url string) error {
+func (r *Response) Attachment(dataType AttachmentType, url string, messagingType MessagingType, tags ...string) error {
+	var tag string
+	if len(tags) > 0 {
+		tag = tags[0]
+	}
+
 	m := SendStructuredMessage{
-		Recipient: r.to,
+		MessagingType: messagingType,
+		Recipient:     r.to,
 		Message: StructuredMessageData{
 			Attachment: StructuredMessageAttachment{
 				Type: dataType,
@@ -114,36 +162,62 @@ func (r *Response) Attachment(dataType AttachmentType, url string) error {
 				},
 			},
 		},
+		Tag: tag,
 	}
 	return r.DispatchMessage(&m)
 }
 
+// copied from multipart package
+var quoteEscaper = strings.NewReplacer("\\", "\\\\", `"`, "\\\"")
+
+// copied from multipart package
+func escapeQuotes(s string) string {
+	return quoteEscaper.Replace(s)
+}
+
+// copied from multipart package with slight changes due to fixed content-type there
+func createFormFile(filename string, w *multipart.Writer, contentType string) (io.Writer, error) {
+	h := make(textproto.MIMEHeader)
+	h.Set("Content-Disposition",
+		fmt.Sprintf(`form-data; name="filedata"; filename="%s"`,
+			escapeQuotes(filename)))
+	h.Set("Content-Type", contentType)
+	return w.CreatePart(h)
+}
+
 // AttachmentData sends an image, sound, video or a regular file to a chat via an io.Reader.
 func (r *Response) AttachmentData(dataType AttachmentType, filename string, filedata io.Reader) error {
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
 
-	data, err := w.CreateFormFile("filedata", filename)
+	filedataBytes, err := ioutil.ReadAll(filedata)
+	if err != nil {
+		return err
+	}
+	contentType := http.DetectContentType(filedataBytes[:512])
+	fmt.Println("Content-type detected:", contentType)
+
+	var body bytes.Buffer
+	multipartWriter := multipart.NewWriter(&body)
+	data, err := createFormFile(filename, multipartWriter, contentType)
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(data, filedata)
+	_, err = bytes.NewBuffer(filedataBytes).WriteTo(data)
 	if err != nil {
 		return err
 	}
 
-	w.WriteField("recipient", fmt.Sprintf(`{"id":"%v"}`, r.to.ID))
-	w.WriteField("message", fmt.Sprintf(`{"attachment":{"type":"%v", "payload":{}}}`, dataType))
+	multipartWriter.WriteField("recipient", fmt.Sprintf(`{"id":"%v"}`, r.to.ID))
+	multipartWriter.WriteField("message", fmt.Sprintf(`{"attachment":{"type":"%v", "payload":{}}}`, dataType))
 
-	req, err := http.NewRequest("POST", SendMessageURL, &b)
+	req, err := http.NewRequest("POST", SendMessageURL, &body)
 	if err != nil {
 		return err
 	}
 
 	req.URL.RawQuery = "access_token=" + r.token
 
-	req.Header.Set("Content-Type", w.FormDataContentType())
+	req.Header.Set("Content-Type", multipartWriter.FormDataContentType())
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -151,15 +225,19 @@ func (r *Response) AttachmentData(dataType AttachmentType, filename string, file
 		return err
 	}
 
-	var res bytes.Buffer
-	res.ReadFrom(resp.Body)
-	return nil
+	return checkFacebookError(resp.Body)
 }
 
 // ButtonTemplate sends a message with the main contents being button elements
-func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton) error {
+func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButton, messagingType MessagingType, tags ...string) error {
+	var tag string
+	if len(tags) > 0 {
+		tag = tags[0]
+	}
+
 	m := SendStructuredMessage{
-		Recipient: r.to,
+		MessagingType: messagingType,
+		Recipient:     r.to,
 		Message: StructuredMessageData{
 			Attachment: StructuredMessageAttachment{
 				Type: "template",
@@ -171,15 +249,22 @@ func (r *Response) ButtonTemplate(text string, buttons *[]StructuredMessageButto
 				},
 			},
 		},
+		Tag: tag,
 	}
 
 	return r.DispatchMessage(&m)
 }
 
 // GenericTemplate is a message which allows for structural elements to be sent
-func (r *Response) GenericTemplate(elements *[]StructuredMessageElement) error {
+func (r *Response) GenericTemplate(elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) error {
+	var tag string
+	if len(tags) > 0 {
+		tag = tags[0]
+	}
+
 	m := SendStructuredMessage{
-		Recipient: r.to,
+		MessagingType: messagingType,
+		Recipient:     r.to,
 		Message: StructuredMessageData{
 			Attachment: StructuredMessageAttachment{
 				Type: "template",
@@ -190,6 +275,7 @@ func (r *Response) GenericTemplate(elements *[]StructuredMessageElement) error {
 				},
 			},
 		},
+		Tag: tag,
 	}
 	return r.DispatchMessage(&m)
 }
@@ -231,8 +317,10 @@ func (r *Response) DispatchMessage(m interface{}) error {
 
 // SendMessage is the information sent in an API request to Facebook.
 type SendMessage struct {
-	Recipient Recipient   `json:"recipient"`
-	Message   MessageData `json:"message"`
+	MessagingType MessagingType `json:"messaging_type"`
+	Recipient     Recipient     `json:"recipient"`
+	Message       MessageData   `json:"message"`
+	Tag           string        `json:"tag,omitempty"`
 }
 
 // MessageData is a message consisting of text or an attachment, with an additional selection of optional quick replies.
@@ -244,8 +332,10 @@ type MessageData struct {
 
 // SendStructuredMessage is a structured message template.
 type SendStructuredMessage struct {
-	Recipient Recipient             `json:"recipient"`
-	Message   StructuredMessageData `json:"message"`
+	MessagingType MessagingType         `json:"messaging_type"`
+	Recipient     Recipient             `json:"recipient"`
+	Message       StructuredMessageData `json:"message"`
+	Tag           string                `json:"tag,omitempty"`
 }
 
 // StructuredMessageData is an attachment sent with a structured message.
@@ -264,20 +354,34 @@ type StructuredMessageAttachment struct {
 // StructuredMessagePayload is the actual payload of an attachment
 type StructuredMessagePayload struct {
 	// TemplateType must be button, generic or receipt
-	TemplateType string                      `json:"template_type,omitempty"`
-	Text         string                      `json:"text,omitempty"`
-	Elements     *[]StructuredMessageElement `json:"elements,omitempty"`
-	Buttons      *[]StructuredMessageButton  `json:"buttons,omitempty"`
-	Url          string                      `json:"url,omitempty"`
+	TemplateType     string                      `json:"template_type,omitempty"`
+	TopElementStyle  TopElementStyle             `json:"top_element_style,omitempty"`
+	Text             string                      `json:"text,omitempty"`
+	ImageAspectRatio ImageAspectRatio            `json:"image_aspect_ratio,omitempty"`
+	Sharable         bool                        `json:"sharable,omitempty"`
+	Elements         *[]StructuredMessageElement `json:"elements,omitempty"`
+	Buttons          *[]StructuredMessageButton  `json:"buttons,omitempty"`
+	Url              string                      `json:"url,omitempty"`
 }
 
 // StructuredMessageElement is a response containing structural elements
 type StructuredMessageElement struct {
-	Title    string                    `json:"title"`
-	ImageURL string                    `json:"image_url"`
-	ItemURL  string                    `json:"item_url"`
-	Subtitle string                    `json:"subtitle"`
-	Buttons  []StructuredMessageButton `json:"buttons"`
+	Title         string                    `json:"title"`
+	ImageURL      string                    `json:"image_url"`
+	ItemURL       string                    `json:"item_url"`
+	Subtitle      string                    `json:"subtitle"`
+	DefaultAction *DefaultAction            `json:"default_action,omitempty"`
+	Buttons       []StructuredMessageButton `json:"buttons"`
+}
+
+// DefaultAction is a response containing default action properties
+type DefaultAction struct {
+	Type                string `json:"type"`
+	URL                 string `json:"url,omitempty"`
+	WebviewHeightRatio  string `json:"webview_height_ratio,omitempty"`
+	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
+	FallbackURL         string `json:"fallback_url,omitempty"`
+	WebviewShareButton  string `json:"webview_share_button,omitempty"`
 }
 
 // StructuredMessageButton is a response containing buttons

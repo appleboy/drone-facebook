@@ -9,8 +9,8 @@ github.com/joho/godotenv v0.0.0-20170328200154-325433c502d4 h1:4efwqN/95XpF2pytt
 github.com/joho/godotenv v0.0.0-20170328200154-325433c502d4/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
 github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0jegS5sx/RkqARlsWZ6pIwiU=
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
-github.com/paked/messenger v0.0.0-20170409165835-64c15a121b44 h1:T3XMgjLahZavIV86j6k+AYrMJ6PKI9dO4UpDAZynIvI=
-github.com/paked/messenger v0.0.0-20170409165835-64c15a121b44/go.mod h1:Qzx/raWa/PQy2+LUhjE1+KXRMuoVi+GSRRN7tVBDfTY=
+github.com/paked/messenger v0.0.0-20181114043059-3dda3ecdde73 h1:ApGIqdzP2jnlx+kBQILyZTS78WoqNV7xWZuq7o65asI=
+github.com/paked/messenger v0.0.0-20181114043059-3dda3ecdde73/go.mod h1:Qzx/raWa/PQy2+LUhjE1+KXRMuoVi+GSRRN7tVBDfTY=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_golang v0.0.0-20170424191319-d01fd6222241 h1:kwyJ9yeIH/Y/5xaQkOgxdFgU+vbV1FhmH9X5cXXMe0A=
 github.com/prometheus/client_golang v0.0.0-20170424191319-d01fd6222241/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=

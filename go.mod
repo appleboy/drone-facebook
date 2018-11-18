@@ -7,7 +7,7 @@ require (
 	github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d
 	github.com/joho/godotenv v0.0.0-20170328200154-325433c502d4
 	github.com/matttproud/golang_protobuf_extensions v1.0.1
-	github.com/paked/messenger v0.0.0-20170409165835-64c15a121b44
+	github.com/paked/messenger v0.0.0-20181114043059-3dda3ecdde73
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/prometheus/client_golang v0.0.0-20170424191319-d01fd6222241
 	github.com/prometheus/client_model v0.0.0-20170216185247-6f3806018612

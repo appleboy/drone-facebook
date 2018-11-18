@@ -2,10 +2,13 @@ package messenger
 
 import (
 	"bytes"
+	"crypto/hmac"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -24,6 +27,9 @@ type Options struct {
 	// Verify sets whether or not to be in the "verify" mode. Used for
 	// verifying webhooks on the Facebook Developer Portal.
 	Verify bool
+	// AppSecret is the app secret from the Facebook Developer Portal. Used when
+	// in the "verify" mode.
+	AppSecret string
 	// VerifyToken is the token to be used when verifying the webhook. Is set
 	// when the webhook is created.
 	VerifyToken string
@@ -53,17 +59,24 @@ type OptInHandler func(OptIn, *Response)
 // ReferralHandler is a handler used postback callbacks.
 type ReferralHandler func(ReferralMessage, *Response)
 
+// AccountLinkingHandler is a handler used to react to an account
+// being linked or unlinked.
+type AccountLinkingHandler func(AccountLinking, *Response)
+
 // Messenger is the client which manages communication with the Messenger Platform API.
 type Messenger struct {
-	mux              *http.ServeMux
-	messageHandlers  []MessageHandler
-	deliveryHandlers []DeliveryHandler
-	readHandlers     []ReadHandler
-	postBackHandlers []PostBackHandler
-	optInHandlers    []OptInHandler
-	referralHandlers []ReferralHandler
-	token            string
-	verifyHandler    func(http.ResponseWriter, *http.Request)
+	mux                    *http.ServeMux
+	messageHandlers        []MessageHandler
+	deliveryHandlers       []DeliveryHandler
+	readHandlers           []ReadHandler
+	postBackHandlers       []PostBackHandler
+	optInHandlers          []OptInHandler
+	referralHandlers       []ReferralHandler
+	accountLinkingHandlers []AccountLinkingHandler
+	token                  string
+	verifyHandler          func(http.ResponseWriter, *http.Request)
+	verify                 bool
+	appSecret              string
 }
 
 // New creates a new Messenger. You pass in Options in order to affect settings.
@@ -73,8 +86,10 @@ func New(mo Options) *Messenger {
 	}
 
 	m := &Messenger{
-		mux:   mo.Mux,
-		token: mo.Token,
+		mux:       mo.Mux,
+		token:     mo.Token,
+		verify:    mo.Verify,
+		appSecret: mo.AppSecret,
 	}
 
 	if mo.WebhookURL == "" {
@@ -119,6 +134,11 @@ func (m *Messenger) HandlePostBack(f PostBackHandler) {
 // HandleReferral adds a new ReferralHandler to the Messenger
 func (m *Messenger) HandleReferral(f ReferralHandler) {
 	m.referralHandlers = append(m.referralHandlers, f)
+}
+
+// HandleAccountLinking adds a new AccountLinkingHandler to the Messenger
+func (m *Messenger) HandleAccountLinking(f AccountLinkingHandler) {
+	m.accountLinkingHandlers = append(m.accountLinkingHandlers, f)
 }
 
 // Handler returns the Messenger in HTTP client form.
@@ -240,7 +260,11 @@ func (m *Messenger) handle(w http.ResponseWriter, r *http.Request) {
 
 	var rec Receive
 
-	err := json.NewDecoder(r.Body).Decode(&rec)
+	// consume a *copy* of the request body
+	body, _ := ioutil.ReadAll(r.Body)
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	err := json.Unmarshal(body, &rec)
 	if err != nil {
 		fmt.Println("could not decode response:", err)
 		fmt.Fprintln(w, `{status: 'not ok'}`)
@@ -251,9 +275,53 @@ func (m *Messenger) handle(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Object is not page, undefined behaviour. Got", rec.Object)
 	}
 
+	if m.verify {
+		if err := m.checkIntegrity(r); err != nil {
+			fmt.Println("could not verify request:", err)
+			fmt.Fprintln(w, `{status: 'not ok'}`)
+			return
+		}
+	}
+
 	m.dispatch(rec)
 
 	fmt.Fprintln(w, `{status: 'ok'}`)
+}
+
+// checkIntegrity checks the integrity of the requests received
+func (m *Messenger) checkIntegrity(r *http.Request) error {
+	if m.appSecret == "" {
+		return fmt.Errorf("missing app secret")
+	}
+
+	sigHeader := "X-Hub-Signature"
+	sig := strings.SplitN(r.Header.Get(sigHeader), "=", 2)
+	if len(sig) == 1 {
+		if sig[0] == "" {
+			return fmt.Errorf("missing %s header", sigHeader)
+		}
+		return fmt.Errorf("malformed %s header: %v", sigHeader, strings.Join(sig, "="))
+	}
+
+	checkSHA1 := func(body []byte, hash string) error {
+		mac := hmac.New(sha1.New, []byte(m.appSecret))
+		if mac.Write(body); fmt.Sprintf("%x", mac.Sum(nil)) != hash {
+			return fmt.Errorf("invalid signature: %s", hash)
+		}
+		return nil
+	}
+
+	body, _ := ioutil.ReadAll(r.Body)
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	sigEnc := strings.ToLower(sig[0])
+	sigHash := strings.ToLower(sig[1])
+	switch sigEnc {
+	case "sha1":
+		return checkSHA1(body, sigHash)
+	default:
+		return fmt.Errorf("unknown %s header encoding, expected sha1: %s", sigHeader, sig[0])
+	}
 }
 
 // dispatch triggers all of the relevant handlers when a webhook event is received.
@@ -312,6 +380,14 @@ func (m *Messenger) dispatch(r Receive) {
 					message.Time = time.Unix(info.Timestamp/int64(time.Microsecond), 0)
 					f(message, resp)
 				}
+			case AccountLinkingAction:
+				for _, f := range m.accountLinkingHandlers {
+					message := *info.AccountLinking
+					message.Sender = info.Sender
+					message.Recipient = info.Recipient
+					message.Time = time.Unix(info.Timestamp/int64(time.Microsecond), 0)
+					f(message, resp)
+				}
 			}
 		}
 	}
@@ -326,37 +402,37 @@ func (m *Messenger) Response(to int64) *Response {
 }
 
 // Send will send a textual message to a user. This user must have previously initiated a conversation with the bot.
-func (m *Messenger) Send(to Recipient, message string) error {
-	return m.SendWithReplies(to, message, nil)
+func (m *Messenger) Send(to Recipient, message string, messagingType MessagingType, tags ...string) error {
+	return m.SendWithReplies(to, message, nil, messagingType, tags...)
 }
 
 // SendGeneralMessage will send the GenericTemplate message
-func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement) error {
+func (m *Messenger) SendGeneralMessage(to Recipient, elements *[]StructuredMessageElement, messagingType MessagingType, tags ...string) error {
 	r := &Response{
 		token: m.token,
 		to:    to,
 	}
-	return r.GenericTemplate(elements)
+	return r.GenericTemplate(elements, messagingType, tags...)
 }
 
 // SendWithReplies sends a textual message to a user, but gives them the option of numerous quick response options.
-func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply) error {
+func (m *Messenger) SendWithReplies(to Recipient, message string, replies []QuickReply, messagingType MessagingType, tags ...string) error {
 	response := &Response{
 		token: m.token,
 		to:    to,
 	}
 
-	return response.TextWithReplies(message, replies)
+	return response.TextWithReplies(message, replies, messagingType, tags...)
 }
 
 // Attachment sends an image, sound, video or a regular file to a given recipient.
-func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string) error {
+func (m *Messenger) Attachment(to Recipient, dataType AttachmentType, url string, messagingType MessagingType, tags ...string) error {
 	response := &Response{
 		token: m.token,
 		to:    to,
 	}
 
-	return response.Attachment(dataType, url)
+	return response.Attachment(dataType, url, messagingType, tags...)
 }
 
 // classify determines what type of message a webhook event is.
@@ -373,6 +449,8 @@ func (m *Messenger) classify(info MessageInfo, e Entry) Action {
 		return OptInAction
 	} else if info.ReferralMessage != nil {
 		return ReferralAction
+	} else if info.AccountLinking != nil {
+		return AccountLinkingAction
 	}
 	return UnknownAction
 }

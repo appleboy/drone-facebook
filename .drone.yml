@@ -1,155 +1,240 @@
+kind: pipeline
+name: lint
+
 workspace:
   base: /go
   path: src/github.com/appleboy/drone-facebook
 
 clone:
-  git:
-    image: plugins/git
-    depth: 50
-    tags: true
+  depth: 50
 
-pipeline:
-  lint:
-    image: golang:1.11
-    pull: true
-    group: test
-    commands:
-      - make vet
-      - make lint
-      - make test-vendor
-      - make misspell-check
+steps:
+- name: testing
+  image: golang:1.11
+  pull: true
+  environment:
+    GO111MODULE: off
+  commands:
+  - make vet
+  - make lint
+  - make test-vendor
+  - make misspell-check
 
-  test:
-    image: golang:1.11
-    pull: true
-    group: test
-    commands:
-      - make test
-      - make coverage
+---
+kind: pipeline
+name: testing
 
-  build_linux_amd64_with_module:
-    image: golang:1.11
-    pull: true
-    group: build
-    environment:
-      GO111MODULE: "on"
-    commands:
-      - make build_linux_amd64
+workspace:
+  base: /go
+  path: src/github.com/appleboy/drone-facebook
 
-  build_linux_amd64:
-    image: golang:1.11
-    pull: true
-    group: build
-    commands:
-      - make build_linux_amd64
+clone:
+  depth: 50
 
-  build_linux_i386:
-    image: golang:1.11
-    pull: true
-    group: build
-    commands:
-      - make build_linux_i386
+steps:
+- name: testing
+  image: golang:1.11
+  pull: true
+  environment:
+    GO111MODULE: off
+    FB_PAGE_TOKEN:
+      from_secret: fb_page_token
+    FB_VERIFY_TOKEN:
+      from_secret: fb_verify_token
+    FB_TO:
+      from_secret: fb_to
+  commands:
+  - make test
+  - make coverage
 
-  build_linux_arm64:
-    image: golang:1.11
-    pull: true
-    group: build
-    commands:
-      - make build_linux_arm64
+- name: codecov
+  image: robertstettner/drone-codecov
+  settings:
+    token:
+      from_secret: codecov_token
 
-  build_linux_arm:
-    image: golang:1.11
-    pull: true
-    group: build
-    commands:
-      - make build_linux_arm
 
-  codecov:
-    image: robertstettner/drone-codecov
-    secrets: [ codecov_token ]
-    when:
-      event: [ push, pull_request ]
-      status: [ success ]
+---
+kind: pipeline
+name: go-module
 
-  release:
-    image: golang:1.11
-    pull: true
-    commands:
-      - make release
-    when:
-      event: [ tag ]
-      local: false
+steps:
+- name: testing
+  image: golang:1.11
+  pull: true
+  commands:
+  - make build_linux_amd64
 
-  release_tag:
-    image: plugins/github-release
-    secrets: [ github_release_api_key ]
-    group: release
-    files:
-      - dist/release/*
-    when:
-      event: [ tag ]
-      local: false
+---
+kind: pipeline
+name: release
 
-  publish_linux_amd64:
-    image: plugins/docker:17.12
-    group: release
-    pull: true
-    repo: ${DRONE_REPO}
-    secrets: [ docker_username, docker_password ]
+steps:
+- name: binary
+  image: golang:1.11
+  pull: true
+  commands:
+  - make release
+
+- name: release
+  image: plugins/github-release
+  settings:
+    api_key:
+      from_secret: github_release_api_key
+    files: dist/release/*
+
+trigger:
+  event:
+  - tag
+
+---
+kind: pipeline
+name: build_linux_amd64
+
+clone:
+  depth: 50
+
+steps:
+- name: fetch
+  image: docker:git
+  commands:
+  - git fetch --tags
+
+- name: binary
+  image: golang:1.11
+  pull: true
+  commands:
+  - make build_linux_amd64
+
+- name: publish
+  image: plugins/docker:17.12
+  settings:
+    repo: appleboy/test
     auto_tag: true
     auto_tag_suffix: linux-amd64
-    when:
-      event: [ push, tag ]
-      local: false
+    dockerfile: Dockerfile
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    event:
+    - push
+    - tag
 
-  publish_alpine:
-    image: plugins/docker:17.12
-    group: release
-    pull: true
-    dockerfile: Dockerfile.alpine
-    secrets: [ docker_username, docker_password ]
-    auto_tag: true
-    auto_tag_suffix: linux-alpine
-    repo: ${DRONE_REPO}
-    when:
-      event: [ push, tag ]
-      local: false
+depends_on:
+- testing
 
-  publish_linux_i386:
-    image: plugins/docker:17.12
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
+---
+kind: pipeline
+name: build_linux_i386
+
+clone:
+  depth: 50
+
+steps:
+- name: fetch
+  image: docker:git
+  commands:
+  - git fetch --tags
+
+- name: binary
+  image: golang:1.11
+  pull: true
+  commands:
+  - make build_linux_i386
+
+- name: publish
+  image: plugins/docker:17.12
+  settings:
+    repo: appleboy/test
     auto_tag: true
     auto_tag_suffix: linux-i386
     dockerfile: Dockerfile.i386
-    when:
-      event: [ push, tag ]
-      local: false
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    event:
+    - push
+    - tag
 
-  publish_linux_arm64:
-    image: plugins/docker:17.12
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
-    auto_tag: true
-    auto_tag_suffix: linux-arm64
-    dockerfile: Dockerfile.arm64
-    when:
-      event: [ push, tag ]
-      local: false
+depends_on:
+- testing
 
-  publish_linux_arm:
-    image: plugins/docker:17.12
-    pull: true
-    secrets: [ docker_username, docker_password ]
-    group: release
-    repo: ${DRONE_REPO}
+---
+kind: pipeline
+name: build_linux_arm
+
+clone:
+  depth: 50
+
+steps:
+- name: fetch
+  image: docker:git
+  commands:
+  - git fetch --tags
+
+- name: binary
+  image: golang:1.11
+  pull: true
+  commands:
+  - make build_linux_arm
+
+- name: publish
+  image: plugins/docker:17.12
+  settings:
+    repo: appleboy/test
     auto_tag: true
     auto_tag_suffix: linux-arm
     dockerfile: Dockerfile.arm
-    when:
-      event: [ push, tag ]
-      local: false
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    event:
+    - push
+    - tag
+
+depends_on:
+- testing
+
+---
+kind: pipeline
+name: build_linux_arm64
+
+clone:
+  depth: 50
+
+steps:
+- name: fetch
+  image: docker:git
+  commands:
+  - git fetch --tags
+
+- name: binary
+  image: golang:1.11
+  pull: true
+  commands:
+  - make build_linux_arm64
+
+- name: publish
+  image: plugins/docker:17.12
+  settings:
+    repo: appleboy/test
+    auto_tag: true
+    auto_tag_suffix: linux-arm64
+    dockerfile: Dockerfile.arm64
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    event:
+    - push
+    - tag
+
+depends_on:
+- testing

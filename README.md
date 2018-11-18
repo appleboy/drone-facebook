@@ -1,6 +1,8 @@
 # drone-facebook
 
-[![Build Status](https://travis-ci.org/appleboy/drone-facebook.svg?branch=master)](https://travis-ci.org/appleboy/drone-facebook) [![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook) [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-facebook)](https://goreportcard.com/report/github.com/appleboy/drone-facebook)
+[![Build Status](http://drone-new.wu-boy.com/api/badges/appleboy/drone-facebook/status.svg)](http://drone-new.wu-boy.com/appleboy/drone-facebook)
+[![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-facebook)](https://goreportcard.com/report/github.com/appleboy/drone-facebook)
 
 [Drone](https://github.com/drone/drone) plugin for sending [Facebook Messages](https://developers.facebook.com/docs/messenger-platform).
 

@@ -102,6 +102,9 @@ trigger:
   event:
   - tag
 
+depends_on:
+- testing
+
 ---
 kind: pipeline
 name: build_linux_amd64

@@ -80,7 +80,15 @@ trigger:
 kind: pipeline
 name: release
 
+clone:
+  depth: 50
+
 steps:
+- name: fetch
+  image: docker:git
+  commands:
+  - git fetch --tags
+
 - name: binary
   image: golang:1.11
   pull: true

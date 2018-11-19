@@ -20,6 +20,10 @@ steps:
   - make test-vendor
   - make misspell-check
 
+trigger:
+  event:
+  - push
+
 ---
 kind: pipeline
 name: testing
@@ -53,6 +57,9 @@ steps:
     token:
       from_secret: codecov_token
 
+trigger:
+  event:
+  - push
 
 ---
 kind: pipeline
@@ -64,6 +71,10 @@ steps:
   pull: true
   commands:
   - make build_linux_amd64
+
+trigger:
+  event:
+  - push
 
 ---
 kind: pipeline

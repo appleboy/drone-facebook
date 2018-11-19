@@ -57,10 +57,6 @@ steps:
     token:
       from_secret: codecov_token
 
-trigger:
-  event:
-  - push
-
 ---
 kind: pipeline
 name: go-module

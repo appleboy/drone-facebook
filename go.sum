@@ -2,6 +2,7 @@ github.com/aymerick/raymond v0.0.0-20161209220724-72acac220747 h1:gu88ZN3sXG5+1m
 github.com/aymerick/raymond v0.0.0-20161209220724-72acac220747/go.mod h1:osfaiScAUVup+UC9Nfq76eWqDhXlp+4UYaA8uhTBO6g=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a h1:BtpsbiV638WQZwhA98cEZw2BsbnQJrbd0BI7tsy0W1c=
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
+github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d h1:KmiEmEGA5sqizMpKnexwioxj8zEUSBc7p9UTQu36lpQ=
 github.com/golang/protobuf v0.0.0-20170331031902-2bba0603135d/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
@@ -11,6 +12,7 @@ github.com/matttproud/golang_protobuf_extensions v1.0.1 h1:4hp9jkHxhMHkqkrB3Ix0j
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/paked/messenger v0.0.0-20181114043059-3dda3ecdde73 h1:ApGIqdzP2jnlx+kBQILyZTS78WoqNV7xWZuq7o65asI=
 github.com/paked/messenger v0.0.0-20181114043059-3dda3ecdde73/go.mod h1:Qzx/raWa/PQy2+LUhjE1+KXRMuoVi+GSRRN7tVBDfTY=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_golang v0.0.0-20170424191319-d01fd6222241 h1:kwyJ9yeIH/Y/5xaQkOgxdFgU+vbV1FhmH9X5cXXMe0A=
 github.com/prometheus/client_golang v0.0.0-20170424191319-d01fd6222241/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
@@ -20,6 +22,7 @@ github.com/prometheus/common v0.0.0-20170418155210-9e0844febd9e h1:aiPUFDOotavq/
 github.com/prometheus/common v0.0.0-20170418155210-9e0844febd9e/go.mod h1:daVV7qP5qjZbuso7PdcryaAu0sAZbrN9i7WWcTMWvro=
 github.com/prometheus/procfs v0.0.0-20170424204552-6ac8c5d890d4 h1:eDLrsy4wO4daqAyVQg5veSHJFCsPaZ8s5aneq95Zn/w=
 github.com/prometheus/procfs v0.0.0-20170424204552-6ac8c5d890d4/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
+github.com/stretchr/testify v0.0.0-20170130113145-4d4bfba8f1d1 h1:Zx8Rp9ozC4FPFxfEKRSUu8+Ay3sZxEUZ7JrCWMbGgvE=
 github.com/stretchr/testify v0.0.0-20170130113145-4d4bfba8f1d1/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/urfave/cli v0.0.0-20170329013517-8ba6f23b6e36 h1:tpInVoeNXKSh4KfaiQgb2Ia+hFjiiqueG1yBvxqkY70=
 github.com/urfave/cli v0.0.0-20170329013517-8ba6f23b6e36/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=

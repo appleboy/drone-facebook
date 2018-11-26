@@ -78,9 +78,9 @@ func TestSendMessage(t *testing.T) {
 			To:          []string{os.Getenv("FB_TO")},
 			Message:     []string{"Test Facebook Bot From Travis or Local from {{ build.author }}", " "},
 			Image:       []string{"https://cdn3.iconfinder.com/data/icons/picons-social/57/16-apple-256.png"},
-			Audio:       []string{"https://ia802508.us.archive.org/5/items/testmp3testfile/mpthreetest.mp3"},
+			// Audio:       []string{"https://ia802508.us.archive.org/5/items/testmp3testfile/mpthreetest.mp3"},
 			// Video:       []string{"https://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4"},
-			File: []string{"http://open.qiniudn.com/where-can-you-use-golang.pdf"},
+			// File: []string{"http://open.qiniudn.com/where-can-you-use-golang.pdf"},
 		},
 	}
 

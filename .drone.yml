@@ -16,13 +16,14 @@ steps:
     GO111MODULE: off
   commands:
   - make vet
-  - make lint
+  - make revive
   - make test-vendor
   - make misspell-check
 
 trigger:
   event:
   - push
+  - pull_request
 
 ---
 kind: pipeline

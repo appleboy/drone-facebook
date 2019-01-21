@@ -17,7 +17,6 @@ steps:
   commands:
   - make vet
   - make lint
-  - make test-vendor
   - make misspell-check
 
 trigger:

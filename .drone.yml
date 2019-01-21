@@ -13,10 +13,10 @@ steps:
   image: golang:1.11
   pull: true
   environment:
-    GO111MODULE: off
+    GO111MODULE: on
   commands:
   - make vet
-  - make revive
+  - make lint
   - make test-vendor
   - make misspell-check
 
@@ -41,7 +41,7 @@ steps:
   image: golang:1.11
   pull: true
   environment:
-    GO111MODULE: off
+    GO111MODULE: on
     FB_PAGE_TOKEN:
       from_secret: fb_page_token
     FB_VERIFY_TOKEN:
@@ -57,21 +57,6 @@ steps:
   settings:
     token:
       from_secret: codecov_token
-
----
-kind: pipeline
-name: go-module
-
-steps:
-- name: testing
-  image: golang:1.11
-  pull: true
-  commands:
-  - make build_linux_amd64
-
-trigger:
-  event:
-  - push
 
 ---
 kind: pipeline

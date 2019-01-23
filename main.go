@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
@@ -13,9 +15,17 @@ import (
 var Version string
 
 func main() {
+	year := fmt.Sprintf("%v", time.Now().Year())
 	app := cli.NewApp()
 	app.Name = "facebook plugin"
 	app.Usage = "facebook plugin"
+	app.Copyright = "Copyright (c) " + year + " Bo-Yi Wu"
+	app.Authors = []cli.Author{
+		{
+			Name:  "Bo-Yi Wu",
+			Email: "appleboy.tw@gmail.com",
+		},
+	}
 	app.Action = run
 	app.Version = Version
 	app.Flags = []cli.Flag{

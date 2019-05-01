@@ -136,7 +136,7 @@ func (p Plugin) Handler(client *messenger.Messenger) http.Handler {
 	client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
 		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
 
-		p, err := client.ProfileByID(m.Sender.ID)
+		p, err := client.ProfileByID(m.Sender.ID, []string{"name", "first_name", "last_name", "profile_pic"})
 		if err != nil {
 			log.Println("Something went wrong!", err)
 		}

@@ -9,7 +9,6 @@ DEPLOY_IMAGE := $(EXECUTABLE)
 
 TARGETS ?= linux darwin windows
 PACKAGES ?= $(shell $(GO) list ./...)
-GOFILES := $(shell find . -name "*.go" -type f)
 SOURCES ?= $(shell find . -name "*.go" -type f)
 TAGS ?=
 LDFLAGS ?= -X 'main.Version=$(VERSION)'
@@ -30,7 +29,7 @@ endif
 all: build
 
 fmt:
-	$(GOFMT) -w $(GOFILES)
+	$(GOFMT) -w $(SOURCES)
 
 vet:
 	$(GO) vet $(PACKAGES)
@@ -39,25 +38,25 @@ lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/mgechev/revive; \
 	fi
-	revive -config config.toml ./... || exit 1
+	revive -config .revive.toml ./... || exit 1
 
 .PHONY: misspell-check
 misspell-check:
 	@hash misspell > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/client9/misspell/cmd/misspell; \
 	fi
-	misspell -error $(GOFILES)
+	misspell -error $(SOURCES)
 
 .PHONY: misspell
 misspell:
 	@hash misspell > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/client9/misspell/cmd/misspell; \
 	fi
-	misspell -w $(GOFILES)
+	misspell -w $(SOURCES)
 
 .PHONY: fmt-check
 fmt-check:
-	@diff=$$($(GOFMT) -d $(GOFILES)); \
+	@diff=$$($(GOFMT) -d $(SOURCES)); \
 	if [ -n "$$diff" ]; then \
 		echo "Please run 'make fmt' and commit the result:"; \
 		echo "$${diff}"; \
@@ -65,10 +64,7 @@ fmt-check:
 	fi;
 
 test: fmt-check
-	$(GO) test -v -cover -coverprofile coverage.txt ./... || exit 1
-
-html:
-	$(GO) tool cover -html=coverage.txt
+	@$(GO) test -v -cover -coverprofile coverage.txt $(PACKAGES) && echo "\n==>\033[32m Ok\033[m\n" || exit 1
 
 install: $(SOURCES)
 	$(GO) install -v -tags '$(TAGS)' -ldflags '$(EXTLDFLAGS)-s -w $(LDFLAGS)'
@@ -87,7 +83,7 @@ release-build:
 	@which gox > /dev/null; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/mitchellh/gox; \
 	fi
-	gox -os="$(TARGETS)" -arch="amd64 386" -tags="$(TAGS)" -ldflags="-s -w $(LDFLAGS)" -output="$(DIST)/binaries/$(EXECUTABLE)-$(VERSION)-{{.OS}}-{{.Arch}}"
+	gox -os="$(TARGETS)" -tags="$(TAGS)" -ldflags="-s -w $(LDFLAGS)" -output="$(DIST)/binaries/$(EXECUTABLE)-$(VERSION)-{{.OS}}-{{.Arch}}"
 
 release-copy:
 	$(foreach file,$(wildcard $(DIST)/binaries/$(EXECUTABLE)-*),cp $(file) $(DIST)/release/$(notdir $(file));)

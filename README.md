@@ -1,6 +1,6 @@
 # drone-facebook
 
-[![Build Status](http://drone-new.wu-boy.com/api/badges/appleboy/drone-facebook/status.svg)](http://drone-new.wu-boy.com/appleboy/drone-facebook)
+[![Build Status](http://drone.wu-boy.com/api/badges/appleboy/drone-facebook/status.svg)](http://drone-new.wu-boy.com/appleboy/drone-facebook)
 [![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook) 
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-facebook)](https://goreportcard.com/report/github.com/appleboy/drone-facebook)
 

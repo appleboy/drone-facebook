@@ -17,10 +17,31 @@ import (
 )
 
 type (
+	// GitHub information.
+	GitHub struct {
+		Workflow  string
+		Workspace string
+		Action    string
+		EventName string
+		EventPath string
+	}
+
 	// Repo information.
 	Repo struct {
-		Owner string
-		Name  string
+		FullName  string
+		Namespace string
+		Name      string
+	}
+
+	// Commit information.
+	Commit struct {
+		Sha     string
+		Ref     string
+		Branch  string
+		Link    string
+		Author  string
+		Email   string
+		Message string
 	}
 
 	// Build information.
@@ -28,15 +49,11 @@ type (
 		Tag      string
 		Event    string
 		Number   int
-		Commit   string
-		Message  string
-		Branch   string
-		Author   string
-		Email    string
 		Status   string
 		Link     string
 		Started  float64
 		Finished float64
+		PR       string
 	}
 
 	// Config for the plugin.
@@ -54,6 +71,7 @@ type (
 		Port        int
 		AutoTLS     bool
 		Host        []string
+		GitHub      bool
 	}
 
 	// Plugin values.
@@ -61,6 +79,8 @@ type (
 		Repo   Repo
 		Build  Build
 		Config Config
+		Commit Commit
+		GitHub GitHub
 	}
 )
 
@@ -229,10 +249,10 @@ func (p Plugin) Exec() error {
 	if len(p.Config.Message) > 0 {
 		message = p.Config.Message
 	} else {
-		message = p.Message(p.Repo, p.Build)
+		message = p.Message()
 	}
 
-	ids := parseTo(p.Config.To, p.Build.Email, p.Config.MatchEmail)
+	ids := parseTo(p.Config.To, p.Commit.Email, p.Config.MatchEmail)
 
 	// send message.
 	for _, user := range ids {
@@ -285,12 +305,21 @@ func (p Plugin) Exec() error {
 }
 
 // Message is plugin default message.
-func (p Plugin) Message(repo Repo, build Build) []string {
+func (p Plugin) Message() []string {
+	if p.Config.GitHub {
+		return []string{fmt.Sprintf("%s/%s triggered by %s (%s)",
+			p.Repo.FullName,
+			p.GitHub.Workflow,
+			p.Repo.Namespace,
+			p.GitHub.EventName,
+		)}
+	}
+
 	return []string{fmt.Sprintf("[%s] <%s> (%s)『%s』by %s",
-		build.Status,
-		build.Link,
-		build.Branch,
-		build.Message,
-		build.Author,
+		p.Build.Status,
+		p.Build.Link,
+		p.Commit.Branch,
+		p.Commit.Message,
+		p.Commit.Author,
 	)}
 }

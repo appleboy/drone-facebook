@@ -51,8 +51,8 @@ func main() {
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
-			Usage:  "text message",
-			EnvVar: "PLUGIN_MESSAGE",
+			Usage:  "send facebook message",
+			EnvVar: "PLUGIN_MESSAGE,TELEGRAM_MESSAGE",
 		},
 		cli.StringSliceFlag{
 			Name:   "image",
@@ -80,9 +80,14 @@ func main() {
 			EnvVar: "PLUGIN_ONLY_MATCH_EMAIL",
 		},
 		cli.StringFlag{
-			Name:   "repo.owner",
-			Usage:  "repository owner",
-			EnvVar: "DRONE_REPO_OWNER",
+			Name:   "repo",
+			Usage:  "repository owner and repository name",
+			EnvVar: "DRONE_REPO,GITHUB_REPOSITORY",
+		},
+		cli.StringFlag{
+			Name:   "repo.namespace",
+			Usage:  "repository namespace",
+			EnvVar: "DRONE_REPO_OWNER,DRONE_REPO_NAMESPACE,GITHUB_ACTOR",
 		},
 		cli.StringFlag{
 			Name:   "repo.name",
@@ -92,13 +97,23 @@ func main() {
 		cli.StringFlag{
 			Name:   "commit.sha",
 			Usage:  "git commit sha",
-			EnvVar: "DRONE_COMMIT_SHA",
+			EnvVar: "DRONE_COMMIT_SHA,GITHUB_SHA",
+		},
+		cli.StringFlag{
+			Name:   "commit.ref",
+			Usage:  "git commit ref",
+			EnvVar: "DRONE_COMMIT_REF,GITHUB_REF",
 		},
 		cli.StringFlag{
 			Name:   "commit.branch",
 			Value:  "master",
 			Usage:  "git commit branch",
 			EnvVar: "DRONE_COMMIT_BRANCH",
+		},
+		cli.StringFlag{
+			Name:   "commit.link",
+			Usage:  "git commit link",
+			EnvVar: "DRONE_COMMIT_LINK",
 		},
 		cli.StringFlag{
 			Name:   "commit.author",
@@ -173,6 +188,36 @@ func main() {
 			Usage:  "Auto tls host name",
 			EnvVar: "PLUGIN_HOSTNAME,HOSTNAME",
 		},
+		cli.BoolFlag{
+			Name:   "github",
+			Usage:  "Boolean value, indicates the runtime environment is GitHub Action.",
+			EnvVar: "PLUGIN_GITHUB,GITHUB",
+		},
+		cli.StringFlag{
+			Name:   "github.workflow",
+			Usage:  "The name of the workflow.",
+			EnvVar: "GITHUB_WORKFLOW",
+		},
+		cli.StringFlag{
+			Name:   "github.action",
+			Usage:  "The name of the action.",
+			EnvVar: "GITHUB_ACTION",
+		},
+		cli.StringFlag{
+			Name:   "github.event.name",
+			Usage:  "The webhook name of the event that triggered the workflow.",
+			EnvVar: "GITHUB_EVENT_NAME",
+		},
+		cli.StringFlag{
+			Name:   "github.event.path",
+			Usage:  "The path to a file that contains the payload of the event that triggered the workflow. Value: /github/workflow/event.json.",
+			EnvVar: "GITHUB_EVENT_PATH",
+		},
+		cli.StringFlag{
+			Name:   "github.workspace",
+			Usage:  "The GitHub workspace path. Value: /github/workspace.",
+			EnvVar: "GITHUB_WORKSPACE",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -186,23 +231,36 @@ func run(c *cli.Context) error {
 	}
 
 	plugin := Plugin{
+		GitHub: GitHub{
+			Workflow:  c.String("github.workflow"),
+			Workspace: c.String("github.workspace"),
+			Action:    c.String("github.action"),
+			EventName: c.String("github.event.name"),
+			EventPath: c.String("github.event.path"),
+		},
 		Repo: Repo{
-			Owner: c.String("repo.owner"),
-			Name:  c.String("repo.name"),
+			FullName:  c.String("repo"),
+			Namespace: c.String("repo.namespace"),
+			Name:      c.String("repo.name"),
+		},
+		Commit: Commit{
+			Sha:     c.String("commit.sha"),
+			Ref:     c.String("commit.ref"),
+			Branch:  c.String("commit.branch"),
+			Link:    c.String("commit.link"),
+			Author:  c.String("commit.author"),
+			Email:   c.String("commit.author.email"),
+			Message: c.String("commit.message"),
 		},
 		Build: Build{
 			Tag:      c.String("build.tag"),
 			Number:   c.Int("build.number"),
 			Event:    c.String("build.event"),
 			Status:   c.String("build.status"),
-			Commit:   c.String("commit.sha"),
-			Branch:   c.String("commit.branch"),
-			Author:   c.String("commit.author"),
-			Email:    c.String("commit.author.email"),
-			Message:  c.String("commit.message"),
 			Link:     c.String("build.link"),
 			Started:  c.Float64("job.started"),
 			Finished: c.Float64("job.finished"),
+			PR:       c.String("pull.request"),
 		},
 		Config: Config{
 			PageToken:   c.String("page.token"),

@@ -260,41 +260,47 @@ func (p Plugin) Exec() error {
 
 		// send text notification
 		for _, value := range trimElement(message) {
-			txt, err := template.RenderTrim(value, p)
+			text, err := template.RenderTrim(value, p)
 			if err != nil {
-				return err
+				log.Println("error to parse the template:", err)
+				continue
 			}
 
-			if err := client.Send(To, txt, messenger.ResponseType); err != nil {
-				return err
+			if err := client.Send(To, text, messenger.ResponseType); err != nil {
+				log.Println("error to send the text:", err)
+				continue
 			}
 		}
 
 		// send image notification
 		for _, value := range trimElement(p.Config.Image) {
 			if err := client.Attachment(To, messenger.ImageAttachment, value, messenger.ResponseType); err != nil {
-				return err
+				log.Println("error to send the image:", err)
+				continue
 			}
 		}
 
 		// send audio notification
 		for _, value := range trimElement(p.Config.Audio) {
 			if err := client.Attachment(To, messenger.AudioAttachment, value, messenger.ResponseType); err != nil {
-				return err
+				log.Println("error to send the audio:", err)
+				continue
 			}
 		}
 
 		// send video notification
 		for _, value := range trimElement(p.Config.Video) {
 			if err := client.Attachment(To, messenger.VideoAttachment, value, messenger.ResponseType); err != nil {
-				return err
+				log.Println("error to send the video:", err)
+				continue
 			}
 		}
 
 		// send file notification
 		for _, value := range trimElement(p.Config.File) {
 			if err := client.Attachment(To, messenger.FileAttachment, value, messenger.ResponseType); err != nil {
-				return err
+				log.Println("error to send the file:", err)
+				continue
 			}
 		}
 	}

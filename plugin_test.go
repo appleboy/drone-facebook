@@ -56,7 +56,7 @@ func TestErrorTemplate(t *testing.T) {
 	}
 
 	err := plugin.Exec()
-	assert.NotNil(t, err)
+	assert.NoError(t, err)
 }
 
 func TestSendMessage(t *testing.T) {

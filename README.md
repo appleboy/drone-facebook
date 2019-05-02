@@ -1,8 +1,12 @@
 # drone-facebook
 
-[![Build Status](http://drone.wu-boy.com/api/badges/appleboy/drone-facebook/status.svg)](http://drone-new.wu-boy.com/appleboy/drone-facebook)
-[![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook) 
+[![GoDoc](https://godoc.org/github.com/appleboy/drone-facebook?status.svg)](https://godoc.org/github.com/appleboy/drone-facebook)
+[![Build Status](https://cloud.drone.io/api/badges/appleboy/drone-facebook/status.svg)](https://cloud.drone.io/appleboy/drone-facebook)
+[![Build status](https://ci.appveyor.com/api/projects/status/aexij85gjg3dsesl?svg=true)](https://ci.appveyor.com/project/appleboy/drone-facebook)
+[![codecov](https://codecov.io/gh/appleboy/drone-facebook/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/drone-facebook)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/drone-facebook)](https://goreportcard.com/report/github.com/appleboy/drone-facebook)
+[![Docker Pulls](https://img.shields.io/docker/pulls/appleboy/drone-facebook.svg)](https://hub.docker.com/r/appleboy/drone-facebook/)
+[![](https://images.microbadger.com/badges/image/appleboy/drone-facebook.svg)](https://microbadger.com/images/appleboy/drone-facebook "Get your own image badge on microbadger.com")
 
 [Drone](https://github.com/drone/drone) plugin for sending [Facebook Messages](https://developers.facebook.com/docs/messenger-platform).
 

@@ -47,7 +47,7 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "to",
 			Usage:  "send message to user",
-			EnvVar: "PLUGIN_TO",
+			EnvVar: "PLUGIN_TO,FB_TO",
 		},
 		cli.StringSliceFlag{
 			Name:   "message",

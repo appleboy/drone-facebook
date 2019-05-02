@@ -223,8 +223,6 @@ func (p Plugin) serveMux() *http.ServeMux {
 // Bot is new Line Bot clien.
 func (p Plugin) Bot() (*messenger.Messenger, error) {
 	if len(p.Config.PageToken) == 0 || len(p.Config.VerifyToken) == 0 {
-		log.Println("missing facebook config")
-
 		return nil, errors.New("missing facebook config")
 	}
 

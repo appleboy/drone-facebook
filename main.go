@@ -52,27 +52,27 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "message",
 			Usage:  "send facebook message",
-			EnvVar: "PLUGIN_MESSAGE,TELEGRAM_MESSAGE",
+			EnvVar: "PLUGIN_MESSAGE,FB_MESSAGE",
 		},
 		cli.StringSliceFlag{
 			Name:   "image",
 			Usage:  "image message",
-			EnvVar: "PLUGIN_IMAGES",
+			EnvVar: "PLUGIN_IMAGES,IMAGES",
 		},
 		cli.StringSliceFlag{
 			Name:   "audio",
 			Usage:  "audio message",
-			EnvVar: "PLUGIN_AUDIOS",
+			EnvVar: "PLUGIN_AUDIOS,AUDIOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "video",
 			Usage:  "video message",
-			EnvVar: "PLUGIN_VIDEOS",
+			EnvVar: "PLUGIN_VIDEOS,VIDEOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "file",
 			Usage:  "file message",
-			EnvVar: "PLUGIN_FILES",
+			EnvVar: "PLUGIN_FILES,FILES",
 		},
 		cli.BoolFlag{
 			Name:   "match.email",

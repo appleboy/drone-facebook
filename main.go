@@ -31,18 +31,18 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:   "page.token",
-			Usage:  "facebook page token",
+			Usage:  "Token is the access token of the Facebook page to send messages from.",
 			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN,PAGE_TOKEN",
 		},
 		cli.StringFlag{
 			Name:   "verify.token",
-			Usage:  "facebook verify token",
+			Usage:  "The token used to verify facebook",
 			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN,VERIFY_TOKEN",
 		},
 		cli.BoolFlag{
 			Name:   "verify",
-			Usage:  "verifying webhooks on the Facebook Developer Portal",
-			EnvVar: "PLUGIN_VERIFY,VERIFY",
+			Usage:  "Whether or not the app should verify itself",
+			EnvVar: "PLUGIN_VERIFY,FB_VERIFY",
 		},
 		cli.StringSliceFlag{
 			Name:   "to",

@@ -218,6 +218,11 @@ func main() {
 			Usage:  "The GitHub workspace path. Value: /github/workspace.",
 			EnvVar: "GITHUB_WORKSPACE",
 		},
+		cli.StringFlag{
+			Name:   "app.secret",
+			Usage:  "The app secret from the facebook developer portal",
+			EnvVar: "PLUGIN_APP_SECRET,APP_SECRET",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -276,6 +281,7 @@ func run(c *cli.Context) error {
 			Port:        c.Int("port"),
 			AutoTLS:     c.Bool("autotls"),
 			Host:        c.StringSlice("host"),
+			AppSecret:   c.String("app.secret"),
 		},
 	}
 

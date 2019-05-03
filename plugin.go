@@ -72,6 +72,7 @@ type (
 		AutoTLS     bool
 		Host        []string
 		GitHub      bool
+		AppSecret   string
 	}
 
 	// Plugin values.
@@ -232,6 +233,7 @@ func (p Plugin) Bot() (*messenger.Messenger, error) {
 		VerifyToken: p.Config.VerifyToken,
 		WebhookURL:  "callback",
 		Mux:         p.serveMux(),
+		AppSecret:   p.Config.AppSecret,
 	}), nil
 }
 

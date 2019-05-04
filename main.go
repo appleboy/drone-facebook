@@ -41,7 +41,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:   "verify",
-			Usage:  "Whether or not the app should verify itself",
+			Usage:  "verifying webhooks on the Facebook Developer Portal",
 			EnvVar: "PLUGIN_VERIFY,FB_VERIFY",
 		},
 		cli.StringSliceFlag{

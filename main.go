@@ -57,7 +57,7 @@ func main() {
 		cli.StringSliceFlag{
 			Name:   "image",
 			Usage:  "image message",
-			EnvVar: "PLUGIN_IMAGES,IMAGES,INPUT_PLUGIN_IMAGES",
+			EnvVar: "PLUGIN_IMAGES,IMAGES,INPUT_IMAGES",
 		},
 		cli.StringSliceFlag{
 			Name:   "audio",

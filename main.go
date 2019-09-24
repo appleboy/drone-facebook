@@ -32,52 +32,52 @@ func main() {
 		cli.StringFlag{
 			Name:   "page.token",
 			Usage:  "Token is the access token of the Facebook page to send messages from.",
-			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN,PAGE_TOKEN",
+			EnvVar: "PLUGIN_FB_PAGE_TOKEN,FB_PAGE_TOKEN,PAGE_TOKEN,INPUT_FB_PAGE_TOKEN",
 		},
 		cli.StringFlag{
 			Name:   "verify.token",
 			Usage:  "The token used to verify facebook",
-			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN,VERIFY_TOKEN",
+			EnvVar: "PLUGIN_FB_VERIFY_TOKEN,FB_VERIFY_TOKEN,VERIFY_TOKEN,INPUT_FB_VERIFY_TOKEN",
 		},
 		cli.BoolFlag{
 			Name:   "verify",
 			Usage:  "verifying webhooks on the Facebook Developer Portal",
-			EnvVar: "PLUGIN_VERIFY,FB_VERIFY",
+			EnvVar: "PLUGIN_VERIFY,FB_VERIFY,INPUT_VERIFY",
 		},
 		cli.StringSliceFlag{
 			Name:   "to",
 			Usage:  "send message to user",
-			EnvVar: "PLUGIN_TO,FB_TO",
+			EnvVar: "PLUGIN_TO,FB_TO,INPUT_TO",
 		},
 		cli.StringSliceFlag{
 			Name:   "message",
 			Usage:  "send facebook message",
-			EnvVar: "PLUGIN_MESSAGE,FB_MESSAGE",
+			EnvVar: "PLUGIN_MESSAGE,FB_MESSAGE,INPUT_MESSAGE",
 		},
 		cli.StringSliceFlag{
 			Name:   "image",
 			Usage:  "image message",
-			EnvVar: "PLUGIN_IMAGES,IMAGES",
+			EnvVar: "PLUGIN_IMAGES,IMAGES,INPUT_PLUGIN_IMAGES",
 		},
 		cli.StringSliceFlag{
 			Name:   "audio",
 			Usage:  "audio message",
-			EnvVar: "PLUGIN_AUDIOS,AUDIOS",
+			EnvVar: "PLUGIN_AUDIOS,AUDIOS,INPUT_AUDIOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "video",
 			Usage:  "video message",
-			EnvVar: "PLUGIN_VIDEOS,VIDEOS",
+			EnvVar: "PLUGIN_VIDEOS,VIDEOS,INPUT_VIDEOS",
 		},
 		cli.StringSliceFlag{
 			Name:   "file",
 			Usage:  "file message",
-			EnvVar: "PLUGIN_FILES,FILES",
+			EnvVar: "PLUGIN_FILES,FILES,INPUT_FILES",
 		},
 		cli.BoolFlag{
 			Name:   "match.email",
 			Usage:  "send message when only match email",
-			EnvVar: "PLUGIN_ONLY_MATCH_EMAIL",
+			EnvVar: "PLUGIN_ONLY_MATCH_EMAIL,INPUT_ONLY_MATCH_EMAIL",
 		},
 		cli.StringFlag{
 			Name:   "repo",

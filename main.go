@@ -282,6 +282,7 @@ func run(c *cli.Context) error {
 			AutoTLS:     c.Bool("autotls"),
 			Host:        c.StringSlice("host"),
 			AppSecret:   c.String("app.secret"),
+			GitHub:      c.Bool("github"),
 		},
 	}
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/appleboy/drone-facebook/template"
+	"github.com/drone/drone-template-lib/template"
 	"github.com/paked/messenger"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"

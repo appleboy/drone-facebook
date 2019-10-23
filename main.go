@@ -126,6 +126,11 @@ func main() {
 			EnvVar: "DRONE_COMMIT_AUTHOR_EMAIL",
 		},
 		cli.StringFlag{
+			Name:   "commit.author.avatar",
+			Usage:  "git author avatar",
+			EnvVar: "DRONE_COMMIT_AUTHOR_AVATAR",
+		},
+		cli.StringFlag{
 			Name:   "commit.message",
 			Usage:  "commit message",
 			EnvVar: "DRONE_COMMIT_MESSAGE",
@@ -157,15 +162,20 @@ func main() {
 			Usage:  "build tag",
 			EnvVar: "DRONE_TAG",
 		},
+		cli.StringFlag{
+			Name:   "pull.request",
+			Usage:  "pull request",
+			EnvVar: "DRONE_PULL_REQUEST",
+		},
 		cli.Float64Flag{
 			Name:   "job.started",
 			Usage:  "job started",
-			EnvVar: "DRONE_JOB_STARTED",
+			EnvVar: "DRONE_BUILD_STARTED",
 		},
 		cli.Float64Flag{
 			Name:   "job.finished",
 			Usage:  "job finished",
-			EnvVar: "DRONE_JOB_FINISHED",
+			EnvVar: "DRONE_BUILD_FINISHED",
 		},
 		cli.StringFlag{
 			Name:   "env-file",
@@ -223,6 +233,11 @@ func main() {
 			Usage:  "The app secret from the facebook developer portal",
 			EnvVar: "PLUGIN_APP_SECRET,APP_SECRET",
 		},
+		cli.StringFlag{
+			Name:   "deploy.to",
+			Usage:  "Provides the target deployment environment for the running build. This value is only available to promotion and rollback pipelines.",
+			EnvVar: "DRONE_DEPLOY_TO",
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
@@ -255,6 +270,7 @@ func run(c *cli.Context) error {
 			Link:    c.String("commit.link"),
 			Author:  c.String("commit.author"),
 			Email:   c.String("commit.author.email"),
+			Avatar:  c.String("commit.author.avatar"),
 			Message: c.String("commit.message"),
 		},
 		Build: Build{
@@ -266,6 +282,7 @@ func run(c *cli.Context) error {
 			Started:  c.Float64("job.started"),
 			Finished: c.Float64("job.finished"),
 			PR:       c.String("pull.request"),
+			DeployTo: c.String("deploy.to"),
 		},
 		Config: Config{
 			PageToken:   c.String("page.token"),

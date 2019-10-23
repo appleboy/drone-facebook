@@ -40,6 +40,7 @@ type (
 		Branch  string
 		Link    string
 		Author  string
+		Avatar  string
 		Email   string
 		Message string
 	}
@@ -54,6 +55,7 @@ type (
 		Started  float64
 		Finished float64
 		PR       string
+		DeployTo string
 	}
 
 	// Config for the plugin.
@@ -77,11 +79,11 @@ type (
 
 	// Plugin values.
 	Plugin struct {
+		GitHub GitHub
 		Repo   Repo
+		Commit Commit
 		Build  Build
 		Config Config
-		Commit Commit
-		GitHub GitHub
 	}
 )
 

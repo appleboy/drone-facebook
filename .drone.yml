@@ -9,40 +9,34 @@ platform:
 steps:
 - name: vet
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - make vet
-  environment:
-    GO111MODULE: on
   volumes:
   - name: gopath
     path: /go
 
 - name: lint
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - make lint
-  environment:
-    GO111MODULE: on
   volumes:
   - name: gopath
     path: /go
 
 - name: misspell
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - make misspell-check
-  environment:
-    GO111MODULE: on
   volumes:
   - name: gopath
     path: /go
 
 - name: test
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - make test
   - make coverage
@@ -53,7 +47,6 @@ steps:
       from_secret: fb_to
     FB_VERIFY_TOKEN:
       from_secret: fb_verify_token
-    GO111MODULE: on
   volumes:
   - name: gopath
     path: /go
@@ -80,12 +73,11 @@ platform:
 steps:
 - name: build-push
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/amd64/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
       exclude:
@@ -93,19 +85,18 @@ steps:
 
 - name: build-tag
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/amd64/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
     - tag
 
 - name: executable
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - ./release/linux/amd64/drone-facebook --help
 
@@ -161,12 +152,11 @@ platform:
 steps:
 - name: build-push
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/arm64/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
       exclude:
@@ -174,19 +164,18 @@ steps:
 
 - name: build-tag
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/arm64/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
     - tag
 
 - name: executable
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - ./release/linux/arm64/drone-facebook --help
 
@@ -242,12 +231,11 @@ platform:
 steps:
 - name: build-push
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/arm/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
       exclude:
@@ -255,19 +243,18 @@ steps:
 
 - name: build-tag
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - go build -v -ldflags '-X main.version=${DRONE_TAG##v} -X main.build=${DRONE_BUILD_NUMBER}' -a -o release/linux/arm/drone-facebook
   environment:
     CGO_ENABLED: 0
-    GO111MODULE: on
   when:
     event:
     - tag
 
 - name: executable
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - ./release/linux/arm/drone-facebook --help
 
@@ -323,11 +310,9 @@ platform:
 steps:
 - name: build-all-binary
   pull: always
-  image: golang:1.12
+  image: golang:1.13
   commands:
   - make release
-  environment:
-    GO111MODULE: on
   when:
     event:
     - tag
